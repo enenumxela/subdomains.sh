@@ -125,7 +125,7 @@ _amass() {
 
 	printf "    [${blue}+${reset}] amass"
 	printf "\r"
-	amass enum -passive -d ${domain} -o ${amass_output} &> /dev/null
+	${HOME}/go/bin/amass enum -passive -d ${domain} -o ${amass_output} &> /dev/null
 	echo -e "    [${green}*${reset}] amass: $(wc -l < ${amass_output})"
 }
 
@@ -134,7 +134,7 @@ _sigsubfind3r() {
 
 	printf "    [${blue}+${reset}] sigsubfind3r"
 	printf "\r"
-	sigsubfind3r -d ${domain} -silent 1> ${sigsubfind3r_output} 2> /dev/null
+	${HOME}/go/bin/sigsubfind3r -d ${domain} -silent 1> ${sigsubfind3r_output} 2> /dev/null
 	echo -e "    [${green}*${reset}] sigsubfind3r: $(wc -l < ${sigsubfind3r_output})"
 }
 
@@ -143,7 +143,7 @@ _findomain() {
 
 	printf "    [${blue}+${reset}] findomain"
 	printf "\r"
-	findomain -t ${domain} -q 1> ${findomain_output} 2> /dev/null
+	${HOME}/.local/bin/findomain -t ${domain} -q 1> ${findomain_output} 2> /dev/null
 	echo -e "    [${green}*${reset}] findomain: $(wc -l ${findomain_output} | awk '{print $1}' 2> /dev/null)"
 }
 
@@ -152,7 +152,7 @@ _subfinder() {
 
 	printf "    [${blue}+${reset}] subfinder"
 	printf "\r"
-	subfinder -d ${domain} -silent 1> ${subfinder_output} 2> /dev/null
+	${HOME}/go/bin/subfinder -d ${domain} -silent 1> ${subfinder_output} 2> /dev/null
 	echo -e "    [${green}*${reset}] subfinder: $(wc -l < ${subfinder_output})"
 }
 
