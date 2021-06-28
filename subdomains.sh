@@ -96,7 +96,7 @@ setup_requirements() {
 	GO111MODULE=on go get -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder
 	GO111MODULE=on go get -v github.com/signedsecurity/sigsubfind3r/cmd/sigsubfind3r
 
-	if [! -f ${HOME}/.local/bin/findomain ]
+	if [ ! -f ${HOME}/.local/bin/findomain ]
 	then
 		curl -sL https://github.com/Edu4rdSHL/findomain/releases/latest/download/findomain-linux -o ${HOME}/.local/bin/findomain
 		chmod u+x ${HOME}/.local/bin/findomain
