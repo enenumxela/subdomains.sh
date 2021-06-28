@@ -6,10 +6,16 @@ A wrapper around tools I use for subdomains gathering(amass, subfinder, findomai
 
 ## Installation
 
-To get the script clone this repository:
+Run install script:
 
 ```bash
-$ git clone https://github.com/enenumxela/subdomains.sh.git
+curl -s https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/install.sh | bash -
+```
+
+Clone this repository:
+
+```bash
+git clone https://github.com/enenumxela/subdomains.sh.git
 ```
 
 ## Usage

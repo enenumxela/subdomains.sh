@@ -9,6 +9,8 @@ green="\e[32m"
 yellow="\e[33m"
 underline="\e[4m"
 
+echo -e "\n[+] Running install script for subdomains.sh & its requirements.\n"
+
 tools=(
     tee
     wget
@@ -81,5 +83,5 @@ fi
 
 # subdomains.sh
 
-curl -sL https://github.com/enenumxela/subdomains.sh/raw/main/subdomains.sh -o ${script_path}
+curl -sL https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/subdomains.sh -o ${script_path}
 chmod u+x ${script_path}

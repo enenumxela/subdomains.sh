@@ -176,7 +176,7 @@ do
 			keep=True
 		;;
 		--setup)
-			curl -sL https://github.com/enenumxela/subdomains.sh/raw/main/subdomains.sh | bash -
+			curl -sL https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/install.sh | bash -
 			exit 0
 		;;
 		-h | --help)
