@@ -8,6 +8,7 @@ reset="\e[0m"
 green="\e[32m"
 yellow="\e[33m"
 underline="\e[4m"
+script_filename=${0##*/}
 
 echo -e "\n[+] Running install script for subdomains.sh & its requirements.\n"
 
