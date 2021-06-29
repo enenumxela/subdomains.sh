@@ -113,7 +113,7 @@ handle_domain() {
         }
     }
 
-    cat ${output_directory}/${domain}-temp-*-subdomains.txt | sed 's#*.# #g' | anew -q ${output_directory}/${domain}-subdomains.txt
+    cat ${output_directory}/${domain}-temp-*-subdomains.txt | sed 's#*.# #g' | ${HOME}/go/bin/anew -q ${output_directory}/${domain}-subdomains.txt
 	echo -e "    [=] unique subdomains: $(wc -l < ${output_directory}/${domain}-subdomains.txt)"
 
 	[ ${keep} == False ] && rm ${output_directory}/${domain}-temp-*-subdomains.txt
