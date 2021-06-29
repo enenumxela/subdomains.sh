@@ -191,33 +191,10 @@ do
 	shift
 done
 
-# ensure required tools are installed
-tools=(
-	amass
-	subfinder
-	findomain
-	sigsubfind3r
-)
-missing_tools=()
-
-for tool in "${tools[@]}"
-do
-	if [ ! -x "$(command -v ${tool})" ]
-	then 
-		missing_tools+=(${tool})
-	fi
-done
-
-[ ${#missing_tools[@]} -gt 0 ] && {
-	missing_tools_str="${missing_tools[@]}"
-	echo -e "\n${blue}[${red}-${blue}]${reset} failed! missing tool(s) : " ${missing_tools_str// /,}"\n"
-	exit 1
-}
-
-# ensure domain(s) is/are provided
+# ensure domain(s) input is provided
 if [ ${domain} == False ] && [ ${domains_list} == False ]
 then
-	echo -e "${blue}[${red}-${blue}]${reset} failed! argument -d/--domain OR -l/--list is Required!\n"
+	echo -e "${blue}[${red}-${blue}]${reset} failed! argument -d/--domain OR -dL/--list is Required!\n"
 	exit 1
 fi
 
