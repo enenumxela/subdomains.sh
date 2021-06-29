@@ -8,13 +8,12 @@ reset="\e[0m"
 green="\e[32m"
 yellow="\e[33m"
 underline="\e[4m"
-script_filename=${0##*/}
 
-echo -e "[+] Running install script for subdomains.sh & its requirements.\n"
+echo -e " [+] Running install script for subdomains.sh & its requirements.\n"
 
 tools=(
     tee
-    wget
+    curl
 )
 missing_tools=()
 
@@ -37,7 +36,7 @@ if [ ! -x "$(command -v go)" ]
 then
     version=1.15.7
 
-    wget https://golang.org/dl/go${version}.linux-amd64.tar.gz -O /tmp/go${version}.linux-amd64.tar.gz
+    curl -sL https://golang.org/dl/go${version}.linux-amd64.tar.gz -o /tmp/go${version}.linux-amd64.tar.gz
 
     sudo tar -xzf /tmp/go${version}.linux-amd64.tar.gz -C /usr/local
 
@@ -54,6 +53,10 @@ then
     source ~/.profile
 fi
 
+# anew
+
+go get -u github.com/tomnomnom/anew
+
 # amass
 
 GO111MODULE=on go get github.com/OWASP/Amass/v3/...
@@ -66,14 +69,6 @@ GO111MODULE=on go get -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder
 
 GO111MODULE=on go get -v github.com/signedsecurity/sigsubfind3r/cmd/sigsubfind3r
 
-# findomain
-
-if [ ! -f ${HOME}/.local/bin/findomain ]
-then
-    curl -sL https://github.com/Edu4rdSHL/findomain/releases/latest/download/findomain-linux -o ${HOME}/.local/bin/findomain
-    chmod u+x ${HOME}/.local/bin/findomain
-fi
-
 script_directory="${HOME}/.local/bin"
 
 if [ ! -d ${script_directory} ]
@@ -81,14 +76,26 @@ then
     mkdir -p ${script_directory}
 fi
 
-script_path="${script_directory}/${script_filename}"
+# findomain
 
-if [ -e "${script_path}" ]
+binary_path="${script_directory}/findomain"
+
+if [ -e "${binary_path}" ]
+then
+    rm ${binary_path}
+fi
+
+curl -sL https://github.com/Edu4rdSHL/findomain/releases/latest/download/findomain-linux -o ${binary_path}
+chmod u+x ${binary_path}
+
+# subdomains.sh
+
+script_path="${script_directory}/subdomains.sh"
+
+if [ -f "${script_path}" ]
 then
     rm ${script_path}
 fi
-
-# subdomains.sh
 
 curl -sL https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/subdomains.sh -o ${script_path}
 chmod u+x ${script_path}
