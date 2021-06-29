@@ -10,7 +10,7 @@ yellow="\e[33m"
 underline="\e[4m"
 script_filename=${0##*/}
 
-echo -e "\n[+] Running install script for subdomains.sh & its requirements.\n"
+echo -e "[+] Running install script for subdomains.sh & its requirements.\n"
 
 tools=(
     tee
@@ -44,8 +44,14 @@ then
     (grep -q "export PATH=\$PATH:/usr/local/go/bin" ~/.profile) || {
         export PATH=$PATH:/usr/local/go/bin
         echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.profile
-        source ~/.profile
     }
+
+    (grep -q "export PATH=\$PATH:${HOME}/go/bin" ~/.profile) || {
+        export PATH=$PATH:${HOME}/go/bin
+        echo "export PATH=\$PATH:${HOME}/go/bin" >> ~/.profile
+    }
+
+    source ~/.profile
 fi
 
 # amass
