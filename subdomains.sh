@@ -120,7 +120,7 @@ handle_domain() {
 
 	if [ ${filter_dead} == True ]
 	then
-		${HOME}/.local/bin/massdns -r ${HOME}/wordlists/resolvers.txt -q -t A -o S -w ${output_directory}/${domain}-temp-massdns-subdomains.txt ${subdomains}
+		${HOME}/.local/bin/massdns -r ${HOME}/wordlists/resolvers.txt -q -t A -o S -w ${output_directory}/${domain}-temp-massdns-subdomains.txt ${output_directory}/${domain}-subdomains.txt
 
 		cat ${output_directory}/${domain}-temp-massdns-subdomains.txt | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | sort -u > ${output_directory}/${domain}-subdomains.txt
 	fi
