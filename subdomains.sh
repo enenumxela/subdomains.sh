@@ -12,6 +12,7 @@ script_filename=${0##*/}
 
 keep=False
 domain=False
+filter_dead=False
 domains_list=False
 sources=(
 	amass
@@ -36,6 +37,7 @@ display_usage() {
 	\r   -dL, --domain-list \t\t domain to enumerate subdomains for
     \r   -eS, --exclude-source \t comma(,) separated passive tools to exclude
 	\r   -uS, --use-source\t\t comma(,) separated passive tools to use
+	\r        --filter-dead \t\t filter out dead subdomains
     \r    -o, --output-dir \t\t output directory
 	\r    -k, --keep \t\t\t keep each tool's temp results
 	\r        --setup\t\t\t setup requirements for this script
@@ -116,6 +118,13 @@ handle_domain() {
     cat ${output_directory}/${domain}-temp-*-subdomains.txt | sed 's#*.# #g' | ${HOME}/go/bin/anew -q ${output_directory}/${domain}-subdomains.txt
 	echo -e "    [=] unique subdomains: $(wc -l < ${output_directory}/${domain}-subdomains.txt)"
 
+	if [ ${filter_dead} == True ]
+	then
+		${HOME}/.local/bin/massdns -r ${HOME}/wordlists/resolvers.txt -q -t A -o S -w ${output_directory}/${domain}-temp-massdns-subdomains.txt ${subdomains}
+
+		cat ${output_directory}/${domain}-temp-massdns-subdomains.txt | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | sort -u > ${output_directory}/${domain}-subdomains.txt
+	fi
+
 	[ ${keep} == False ] && rm ${output_directory}/${domain}-temp-*-subdomains.txt
 }
 
@@ -167,6 +176,9 @@ do
 				fi
 			done
 			shift
+		;;
+		--filter-dead)
+			filter_dead=True
 		;;
 		-o | --output-dir)
 			output_directory="${2}"
