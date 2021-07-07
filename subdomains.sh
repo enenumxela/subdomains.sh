@@ -88,6 +88,7 @@ _sigsubfind3r() {
 
 handle_domain() {
 	local subdomains_txt=${output_directory}/${domain}-subdomains.txt
+	local subdomains_dns_records_txt=${output_directory}/${domain}-subdomains-dns-records.txt
 	local resolved_txt=${output_directory}/${domain}-resolved.txt
 
     [ ${sources_to_use} == False ] && [ ${sources_to_exclude} == False ] && {
@@ -123,13 +124,18 @@ handle_domain() {
 
 	if [ ${resolve} == True ]
 	then
-		${HOME}/.local/bin/massdns -r ${HOME}/wordlists/resolvers.txt -q -t A -o S -w ${output_directory}/${domain}-temp-massdns-subdomains.txt ${output_directory}/${domain}-subdomains.txt
+		# ${HOME}/.local/bin/massdns -r ${HOME}/wordlists/resolvers.txt -q -t A -o S -w ${output_directory}/${domain}-temp-massdns-subdomains.txt ${output_directory}/${domain}-subdomains.txt
 
-		cat ${output_directory}/${domain}-temp-massdns-subdomains.txt | \
-			grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | \
-				${HOME}/go/bin/anew -q ${resolved_txt}
+		printf "    [${blue}+${reset}] resolve"
+		printf "\r"
+		cat ${subdomains_txt} | ${HOME}/.local/bin/massdns -r ${HOME}/wordlists/resolvers.txt -q -t A -o F -w ${subdomains_dns_records_txt} -
+		echo -e "    [${green}*${reset}] resolved:"
 
-		echo -e "        [>] resolved  : $(wc -l < ${resolved_txt})"
+		# cat ${output_directory}/${domain}-temp-massdns-subdomains.txt | \
+		# 	grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | \
+		# 		${HOME}/go/bin/anew -q ${resolved_txt}
+
+		# echo -e "        [>] resolved  : $(wc -l < ${resolved_txt})"
 	fi
 
 	[ ${keep} == False ] && rm ${output_directory}/${domain}-temp-*-subdomains.txt
