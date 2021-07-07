@@ -12,17 +12,19 @@ script_filename=${0##*/}
 
 keep=False
 domain=False
-filter_dead=False
+resolve=False
 domains_list=False
+
 sources=(
 	amass
-    subfinder
-    findomain
+	subfinder
+	findomain
 	sigsubfind3r
 )
 sources_to_use=False
 sources_to_exclude=False
-output_directory="$(pwd)/subdomains.sh-output"
+
+output_directory="$(pwd)/subdomain-enumeration"
 
 display_usage() {
 	while read -r line
@@ -35,9 +37,9 @@ display_usage() {
 	\r OPTIONS:
 	\r    -d, --domain \t\t domain to enumerate subdomains for
 	\r   -dL, --domain-list \t\t domain to enumerate subdomains for
-    \r   -eS, --exclude-source \t comma(,) separated passive tools to exclude
-	\r   -uS, --use-source\t\t comma(,) separated passive tools to use
-	\r        --filter-dead \t\t filter out dead subdomains
+    \r   -eS, --exclude-source \t comma(,) separated tools to exclude
+	\r   -uS, --use-source\t\t comma(,) separated tools to use
+	\r    -r, --resolve \t\t resolved collected subdomains
     \r    -o, --output-dir \t\t output directory
 	\r    -k, --keep \t\t\t keep each tool's temp results
 	\r        --setup\t\t\t setup requirements for this script
@@ -57,13 +59,13 @@ _amass() {
 	echo -e "    [${green}*${reset}] amass: $(wc -l < ${amass_output})"
 }
 
-_sigsubfind3r() {
-	local sigsubfind3r_output="${output_directory}/${domain}-temp-sigsubfind3r-subdomains.txt"
+_subfinder() {
+	local subfinder_output="${output_directory}/${domain}-temp-subfinder-subdomains.txt"
 
-	printf "    [${blue}+${reset}] sigsubfind3r"
+	printf "    [${blue}+${reset}] subfinder"
 	printf "\r"
-	${HOME}/go/bin/sigsubfind3r -d ${domain} -silent 1> ${sigsubfind3r_output} 2> /dev/null
-	echo -e "    [${green}*${reset}] sigsubfind3r: $(wc -l < ${sigsubfind3r_output})"
+	${HOME}/go/bin/subfinder -d ${domain} -silent 1> ${subfinder_output} 2> /dev/null
+	echo -e "    [${green}*${reset}] subfinder: $(wc -l < ${subfinder_output})"
 }
 
 _findomain() {
@@ -75,20 +77,18 @@ _findomain() {
 	echo -e "    [${green}*${reset}] findomain: $(wc -l ${findomain_output} | awk '{print $1}' 2> /dev/null)"
 }
 
-_subfinder() {
-	local subfinder_output="${output_directory}/${domain}-temp-subfinder-subdomains.txt"
+_sigsubfind3r() {
+	local sigsubfind3r_output="${output_directory}/${domain}-temp-sigsubfind3r-subdomains.txt"
 
-	printf "    [${blue}+${reset}] subfinder"
+	printf "    [${blue}+${reset}] sigsubfind3r"
 	printf "\r"
-	${HOME}/go/bin/subfinder -d ${domain} -silent 1> ${subfinder_output} 2> /dev/null
-	echo -e "    [${green}*${reset}] subfinder: $(wc -l < ${subfinder_output})"
+	${HOME}/go/bin/sigsubfind3r -d ${domain} -silent 1> ${sigsubfind3r_output} 2> /dev/null
+	echo -e "    [${green}*${reset}] sigsubfind3r: $(wc -l < ${sigsubfind3r_output})"
 }
 
 handle_domain() {
-    if [ ! -d ${output_directory} ]
-    then
-        mkdir -p ${output_directory}
-    fi
+	local subdomains_txt=${output_directory}/${domain}-subdomains.txt
+	local resolved_txt=${output_directory}/${domain}-resolved.txt
 
     [ ${sources_to_use} == False ] && [ ${sources_to_exclude} == False ] && {
         for source in "${sources[@]}"
@@ -115,14 +115,21 @@ handle_domain() {
         }
     }
 
-    cat ${output_directory}/${domain}-temp-*-subdomains.txt | sed 's#*.# #g' | ${HOME}/go/bin/anew -q ${output_directory}/${domain}-subdomains.txt
-	echo -e "    [=] unique subdomains: $(wc -l < ${output_directory}/${domain}-subdomains.txt)"
+    cat ${output_directory}/${domain}-temp-*-subdomains.txt | \
+		sed 's#*.# #g' | \
+			${HOME}/go/bin/anew -q ${subdomains_txt}
 
-	if [ ${filter_dead} == True ]
+	echo -e "        [>] subdomains: $(wc -l < ${subdomains_txt})"
+
+	if [ ${resolve} == True ]
 	then
 		${HOME}/.local/bin/massdns -r ${HOME}/wordlists/resolvers.txt -q -t A -o S -w ${output_directory}/${domain}-temp-massdns-subdomains.txt ${output_directory}/${domain}-subdomains.txt
 
-		cat ${output_directory}/${domain}-temp-massdns-subdomains.txt | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | sort -u > ${output_directory}/${domain}-subdomains.txt
+		cat ${output_directory}/${domain}-temp-massdns-subdomains.txt | \
+			grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | \
+				${HOME}/go/bin/anew -q ${resolved_txt}
+
+		echo -e "        [>] resolved  : $(wc -l < ${resolved_txt})"
 	fi
 
 	[ ${keep} == False ] && rm ${output_directory}/${domain}-temp-*-subdomains.txt
@@ -177,8 +184,8 @@ do
 			done
 			shift
 		;;
-		--filter-dead)
-			filter_dead=True
+		-r | --resolve)
+			resolve=True
 		;;
 		-o | --output-dir)
 			output_directory="${2}"
@@ -210,6 +217,11 @@ then
 	exit 1
 fi
 
+if [ ! -d ${output_directory} ]
+then
+	mkdir -p ${output_directory}
+fi
+
 # Flow for a single domain
 if [ ${domain} != False ]
 then
@@ -224,8 +236,13 @@ then
 	count=1
 	while read domain
 	do
-		echo -e "\n[*] (${count}/${total}) subdomain enumeration on ${domain}"
-		handle_domain
+		if [[ ${domain} == "" ]]
+		then
+			echo -e "\n[*] (${count}/${total}) empty! skipping..."
+		else
+			echo -e "\n[*] (${count}/${total}) subdomain enumeration on ${domain}"
+			handle_domain
+		fi
 		let count+=1
 	done < ${domains_list}
 fi

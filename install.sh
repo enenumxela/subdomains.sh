@@ -11,8 +11,9 @@ underline="\e[4m"
 
 echo -e " [+] Running install script for subdomains.sh & its requirements.\n"
 
+# amass, subfinder, findomain, sigsubfind3r, anew, massdns, cat, sed, grep,curl
+
 tools=(
-    tee
     curl
 )
 missing_tools=()
