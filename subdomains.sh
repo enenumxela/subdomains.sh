@@ -39,7 +39,7 @@ display_usage() {
 	\r   -dL, --domain-list \t\t domain to enumerate subdomains for
     \r   -eS, --exclude-source \t comma(,) separated tools to exclude
 	\r   -uS, --use-source\t\t comma(,) separated tools to use
-	\r    -r, --resolve \t\t resolved collected subdomains
+	\r    -r, --resolve \t\t resolved collected subdomains (massdns)
     \r    -o, --output-dir \t\t output directory
 	\r    -k, --keep \t\t\t keep each tool's temp results
 	\r        --setup\t\t\t setup requirements for this script
@@ -124,18 +124,10 @@ handle_domain() {
 
 	if [ ${resolve} == True ]
 	then
-		# ${HOME}/.local/bin/massdns -r ${HOME}/wordlists/resolvers.txt -q -t A -o S -w ${output_directory}/${domain}-temp-massdns-subdomains.txt ${output_directory}/${domain}-subdomains.txt
-
 		printf "    [${blue}+${reset}] resolve"
 		printf "\r"
 		cat ${subdomains_txt} | ${HOME}/.local/bin/massdns -r ${HOME}/wordlists/resolvers.txt -q -t A -o F -w ${subdomains_dns_records_txt} -
 		echo -e "    [${green}*${reset}] resolved:"
-
-		# cat ${output_directory}/${domain}-temp-massdns-subdomains.txt | \
-		# 	grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | \
-		# 		${HOME}/go/bin/anew -q ${resolved_txt}
-
-		# echo -e "        [>] resolved  : $(wc -l < ${resolved_txt})"
 	fi
 
 	[ ${keep} == False ] && rm ${output_directory}/${domain}-temp-*-subdomains.txt
