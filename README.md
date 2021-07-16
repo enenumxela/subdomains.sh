@@ -45,6 +45,6 @@ To display this script's help message, use the `-h` flag:
 
 ```
 
-## Contibution
+## Contribution
 
 [Issues](https://github.com/enenumxela/subdomains.sh/issues) and [Pull Requests](https://github.com/enenumxela/subdomains.sh/pulls) are welcome!
