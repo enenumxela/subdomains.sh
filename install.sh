@@ -9,9 +9,7 @@ green="\e[32m"
 yellow="\e[33m"
 underline="\e[4m"
 
-echo -e " [+] Running install script for subdomains.sh & its requirements.\n"
-
-# amass, subfinder, findomain, sigsubfind3r, anew, massdns, cat, sed, grep,curl
+echo -e " [+] Running install script for subdomains.sh requirements.\n"
 
 tools=(
     curl
@@ -88,15 +86,3 @@ fi
 
 curl -sL https://github.com/Edu4rdSHL/findomain/releases/latest/download/findomain-linux -o ${binary_path}
 chmod u+x ${binary_path}
-
-# subdomains.sh
-
-script_path="${script_directory}/subdomains.sh"
-
-if [ -f "${script_path}" ]
-then
-    rm ${script_path}
-fi
-
-curl -sL https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/subdomains.sh -o ${script_path}
-chmod u+x ${script_path}

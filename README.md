@@ -6,12 +6,6 @@ A wrapper around tools I use for subdomains gathering - [amass](https://github.c
 
 ## Installation
 
-Run install script:
-
-```bash
-curl -s https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/install.sh | bash -
-```
-
 Clone this repository:
 
 ```bash
@@ -22,8 +16,11 @@ git clone https://github.com/enenumxela/subdomains.sh.git
 
 To display this script's help message, use the `-h` flag:
 
+```bash
+./subdomains.sh -h
 ```
-$ ./subdomains.sh -h
+
+```text
 
             _         _                       _                 _     
   ___ _   _| |__   __| | ___  _ __ ___   __ _(_)_ __  ___   ___| |__  
@@ -35,15 +32,14 @@ $ ./subdomains.sh -h
    subdomains.sh [OPTIONS]
 
  OPTIONS:
-    -d, --domain 		 domain to enumerate subdomains for
-   -dL, --domain-list 		 domain to enumerate subdomains for
+   -d,  --domain 		 domain to enumerate subdomains for
    -eS, --exclude-source 	 comma(,) separated tools to exclude
    -uS, --use-source		 comma(,) separated tools to use
-    -r, --resolve 		 resolved collected subdomains (massdns)
-    -o, --output-dir 		 output directory
-    -k, --keep 			 keep each tool's temp results
+   -r,  --resolve 		 resolved collected subdomains (massdns)
+   -oD, --output-dir 		 output directory
+   -k,  --keep 			 keep each tool's temp results
         --setup			 setup requirements for this script
-    -h, --help 			 display this help message and exit
+   -h,  --help 			 display this help message and exit
 
  HAPPY HACKING :)
 

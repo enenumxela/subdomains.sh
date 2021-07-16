@@ -13,7 +13,6 @@ script_filename=${0##*/}
 keep=False
 domain=False
 resolve=False
-domains_list=False
 
 sources=(
 	amass
@@ -24,7 +23,7 @@ sources=(
 sources_to_use=False
 sources_to_exclude=False
 
-output_directory="$(pwd)/subdomain-enumeration"
+output_directory="."
 
 display_usage() {
 	while read -r line
@@ -35,23 +34,22 @@ display_usage() {
 	\r   ${script_filename} [OPTIONS]
 
 	\r OPTIONS:
-	\r    -d, --domain \t\t domain to enumerate subdomains for
-	\r   -dL, --domain-list \t\t domain to enumerate subdomains for
-    \r   -eS, --exclude-source \t comma(,) separated tools to exclude
+	\r   -d,  --domain \t\t domain to enumerate subdomains for
+	\r   -eS, --exclude-source \t comma(,) separated tools to exclude
 	\r   -uS, --use-source\t\t comma(,) separated tools to use
-	\r    -r, --resolve \t\t resolved collected subdomains (massdns)
-    \r    -o, --output-dir \t\t output directory
-	\r    -k, --keep \t\t\t keep each tool's temp results
+	\r   -r,  --resolve \t\t resolved collected subdomains (massdns)
+	\r   -oD, --output-dir \t\t output directory
+	\r   -k,  --keep \t\t\t keep each tool's temp results
 	\r        --setup\t\t\t setup requirements for this script
-	\r    -h, --help \t\t\t display this help message and exit
-    
-    \r ${red}${bold}HAPPY HACKING ${yellow}:)${reset}
+	\r   -h,  --help \t\t\t display this help message and exit
+
+	\r ${red}${bold}HAPPY HACKING ${yellow}:)${reset}
 
 EOF
 }
 
 _amass() {
-	local amass_output="${output_directory}/${domain}-temp-amass-subdomains.txt"
+	local amass_output="${output_directory}/${domain}-amass-subdomains.txt"
 
 	printf "    [${blue}+${reset}] amass"
 	printf "\r"
@@ -60,7 +58,7 @@ _amass() {
 }
 
 _subfinder() {
-	local subfinder_output="${output_directory}/${domain}-temp-subfinder-subdomains.txt"
+	local subfinder_output="${output_directory}/${domain}-subfinder-subdomains.txt"
 
 	printf "    [${blue}+${reset}] subfinder"
 	printf "\r"
@@ -69,7 +67,7 @@ _subfinder() {
 }
 
 _findomain() {
-	local findomain_output="${output_directory}/${domain}-temp-findomain-subdomains.txt"
+	local findomain_output="${output_directory}/${domain}-findomain-subdomains.txt"
 
 	printf "    [${blue}+${reset}] findomain"
 	printf "\r"
@@ -78,59 +76,12 @@ _findomain() {
 }
 
 _sigsubfind3r() {
-	local sigsubfind3r_output="${output_directory}/${domain}-temp-sigsubfind3r-subdomains.txt"
+	local sigsubfind3r_output="${output_directory}/${domain}-sigsubfind3r-subdomains.txt"
 
 	printf "    [${blue}+${reset}] sigsubfind3r"
 	printf "\r"
 	${HOME}/go/bin/sigsubfind3r -d ${domain} -silent 1> ${sigsubfind3r_output} 2> /dev/null
 	echo -e "    [${green}*${reset}] sigsubfind3r: $(wc -l < ${sigsubfind3r_output})"
-}
-
-handle_domain() {
-	local subdomains_txt=${output_directory}/${domain}-subdomains.txt
-	local subdomains_dns_records_txt=${output_directory}/${domain}-subdomains-dns-records.txt
-	local resolved_txt=${output_directory}/${domain}-resolved.txt
-
-    [ ${sources_to_use} == False ] && [ ${sources_to_exclude} == False ] && {
-        for source in "${sources[@]}"
-        do
-            _${source}
-        done
-    } || {
-        [ ${sources_to_use} != False ] && {
-            for source in "${sources_to_use_dictionary[@]}"
-            do
-                _${source}
-            done
-        }
-        [ ${sources_to_exclude} != False ] && {
-            for source in ${sources[@]}
-            do
-                if [[ " ${sources_to_exclude_dictionary[@]} " =~ " ${source} " ]]
-                then
-                    continue
-                else
-                    _${source}
-                fi
-            done
-        }
-    }
-
-    cat ${output_directory}/${domain}-temp-*-subdomains.txt | \
-		sed 's#*.# #g' | \
-			${HOME}/go/bin/anew -q ${subdomains_txt}
-
-	echo -e "        [>] subdomains: $(wc -l < ${subdomains_txt})"
-
-	if [ ${resolve} == True ]
-	then
-		printf "    [${blue}+${reset}] resolve"
-		printf "\r"
-		cat ${subdomains_txt} | ${HOME}/.local/bin/massdns -r ${HOME}/wordlists/resolvers.txt -q -t A -o F -w ${subdomains_dns_records_txt} -
-		echo -e "    [${green}*${reset}] resolved:"
-	fi
-
-	[ ${keep} == False ] && rm ${output_directory}/${domain}-temp-*-subdomains.txt
 }
 
 # display banner
@@ -148,10 +99,6 @@ do
 	case ${1} in
 		-d | --domain)
 			domain=${2}
-			shift
-		;;
-		-dL | --domain-list)
-			domains_list=${2}
 			shift
 		;;
 		-eS | --exclude-source)
@@ -185,7 +132,7 @@ do
 		-r | --resolve)
 			resolve=True
 		;;
-		-o | --output-dir)
+		-oD | --output-dir)
 			output_directory="${2}"
 			shift
 		;;
@@ -223,26 +170,54 @@ fi
 # Flow for a single domain
 if [ ${domain} != False ]
 then
-	echo -e "\n[*] subdomain enumeration on ${domain}"
-	handle_domain
-fi
+	echo -e "[*] subdomain enumeration on ${domain}"
 
-# Flow for a domain list
-if [ ${domains_list} != False ]
-then
-	total=$(wc -l < ${domains_list})
-	count=1
-	while read domain
-	do
-		if [[ ${domain} == "" ]]
-		then
-			echo -e "\n[*] (${count}/${total}) empty! skipping..."
-		else
-			echo -e "\n[*] (${count}/${total}) subdomain enumeration on ${domain}"
-			handle_domain
-		fi
-		let count+=1
-	done < ${domains_list}
+	subdomains="${output_directory}/${domain}-subdomains.txt"
+	dns_records="${output_directory}/${domain}-subdomains-dns-records.txt"
+
+	[ ${sources_to_use} == False ] && [ ${sources_to_exclude} == False ] && {
+		for source in "${sources[@]}"
+		do
+			_${source}
+		done
+	} || {
+		[ ${sources_to_use} != False ] && {
+			for source in "${sources_to_use_dictionary[@]}"
+			do
+				_${source}
+			done
+		}
+		[ ${sources_to_exclude} != False ] && {
+			for source in ${sources[@]}
+			do
+				if [[ " ${sources_to_exclude_dictionary[@]} " =~ " ${source} " ]]
+				then
+					continue
+				else
+					_${source}
+				fi
+			done
+		}
+	}
+
+	cat ${output_directory}/${domain}-*-subdomains.txt | \
+		sed 's#*.# #g' | \
+			${HOME}/go/bin/anew -q ${subdomains}
+
+	echo -e "        [>] subdomains: $(wc -l < ${subdomains})"
+
+	if [ ${keep} == False ]
+	then
+		rm ${output_directory}/${domain}-*-subdomains.txt
+	fi
+
+	if [ ${resolve} == True ]
+	then
+		printf "    [${blue}+${reset}] resolve"
+		printf "\r"
+		${HOME}/.local/bin/massdns -r ${HOME}/wordlists/resolvers.txt -q -t A -o F -w ${dns_records} ${subdomains}
+		echo -e "    [${green}*${reset}] resolved:"
+	fi
 fi
 
 exit 0
