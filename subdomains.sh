@@ -215,7 +215,7 @@ then
 	then
 		printf "    [${blue}+${reset}] resolve"
 		printf "\r"
-		${HOME}/.local/bin/massdns -r ${HOME}/wordlists/resolvers.txt -q -t A -o F -w ${dns_records} ${subdomains}
+		massdns -r ${HOME}/wordlists/resolvers.txt -q -t A -o F -w ${dns_records} ${subdomains}
 		echo -e "    [${green}*${reset}] resolved:"
 	fi
 fi
