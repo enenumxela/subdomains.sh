@@ -62,7 +62,7 @@ _subfinder() {
 }
 
 _findomain() {
-	${HOME}/.local/bin/findomain -t ${domain} -q | ${HOME}/go/bin/anew ${subdomains}
+	findomain -t ${domain} -q | ${HOME}/go/bin/anew ${subdomains}
 }
 
 _sigsubfind3r() {
