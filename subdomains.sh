@@ -69,7 +69,6 @@ _sigsubfind3r() {
 	${HOME}/go/bin/sigsubfind3r -d ${domain} --silent | ${HOME}/go/bin/anew ${subdomains}
 }
 
-# parse options
 while [[ "${#}" -gt 0 && ."${1}" == .-* ]]
 do
 	case ${1} in
@@ -125,22 +124,12 @@ do
 	shift
 done
 
-# ensure domain input is provided
-if [ ${domain} == False ] && [ ${domains_list} == False ]
-then
-	echo -e "${blue}[${red}-${blue}]${reset} failed! argument -d/--domain\n"
-	exit 1
-fi
-
-if [ ! -d ${output_directory} ]
-then
-	mkdir -p ${output_directory}
-fi
-
-# enumeration flow
-if [ ${domain} != False ]
-then
+[[ ${domain} != False ]] && [[ ${domain} != "" ]] && {
 	subdomains="${output_directory}/${domain}-subdomains.txt"
+
+	[ ! -d ${output_directory} ] && {
+		mkdir -p ${output_directory}
+	}
 
 	[ ${sources_to_use} == False ] && [ ${sources_to_exclude} == False ] && {
 		for source in "${sources[@]}"
@@ -166,6 +155,7 @@ then
 			done
 		}
 	}
-fi
+}
+
 
 exit 0
