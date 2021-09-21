@@ -23,8 +23,7 @@ sources_to_exclude=False
 
 output_directory="."
 
-display_usage() {
-	# display banner
+display_banner() {
 echo -e ${bold}${blue}"
             _         _                       _                 _     
   ___ _   _| |__   __| | ___  _ __ ___   __ _(_)_ __  ___   ___| |__  
@@ -32,6 +31,10 @@ echo -e ${bold}${blue}"
  \__ \ |_| | |_) | (_| | (_) | | | | | | (_| | | | | \__  ${red}_${blue}\__ \ | | |
  |___/\__,_|_.__/ \__,_|\___/|_| |_| |_|\__,_|_|_| |_|___${red}(_)${blue}___/_| |_| ${yellow}v1.0.0${blue}
 "${reset}
+}
+
+display_usage() {
+	display_banner
 
 	while read -r line
 	do
@@ -54,19 +57,19 @@ EOF
 }
 
 _amass() {
-	${HOME}/go/bin/amass enum -passive -d ${domain} | ${HOME}/go/bin/anew ${subdomains}
+	amass enum -passive -d ${domain} | anew ${subdomains}
 }
 
 _subfinder() {
-	${HOME}/go/bin/subfinder -d ${domain} -all -silent | ${HOME}/go/bin/anew ${subdomains}
+	subfinder -d ${domain} -all -silent | anew ${subdomains}
 }
 
 _findomain() {
-	findomain -t ${domain} -q | ${HOME}/go/bin/anew ${subdomains}
+	findomain -t ${domain} -q | anew ${subdomains}
 }
 
 _sigsubfind3r() {
-	${HOME}/go/bin/sigsubfind3r -d ${domain} --silent | ${HOME}/go/bin/anew ${subdomains}
+	sigsubfind3r -d ${domain} --silent | anew ${subdomains}
 }
 
 while [[ "${#}" -gt 0 && ."${1}" == .-* ]]
