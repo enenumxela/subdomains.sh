@@ -38,23 +38,17 @@ then
     curl -sL https://golang.org/dl/go${version}.linux-amd64.tar.gz -o /tmp/go${version}.linux-amd64.tar.gz
 
     sudo tar -xzf /tmp/go${version}.linux-amd64.tar.gz -C /usr/local
-
-    (grep -q "export PATH=\$PATH:/usr/local/go/bin" ~/.profile) || {
-        export PATH=$PATH:/usr/local/go/bin
-        echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.profile
-    }
-
-    (grep -q "export PATH=\$PATH:${HOME}/go/bin" ~/.profile) || {
-        export PATH=$PATH:${HOME}/go/bin
-        echo "export PATH=\$PATH:${HOME}/go/bin" >> ~/.profile
-    }
-
-    source ~/.profile
 fi
 
-# anew
+(grep -q "export PATH=\$PATH:/usr/local/go/bin" ~/.profile) || {
+    echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.profile
+}
 
-go get -u github.com/tomnomnom/anew
+(grep -q "export PATH=\$PATH:${HOME}/go/bin" ~/.profile) || {
+    echo "export PATH=\$PATH:${HOME}/go/bin" >> ~/.profile
+}
+
+source ~/.profile
 
 # amass
 
@@ -86,3 +80,11 @@ fi
 
 curl -sL https://github.com/Edu4rdSHL/findomain/releases/latest/download/findomain-linux -o ${binary_path}
 chmod u+x ${binary_path}
+
+# anew
+
+go get -u github.com/tomnomnom/anew
+
+# dnsx
+
+go get -v github.com/projectdiscovery/dnsx/cmd/dnsx

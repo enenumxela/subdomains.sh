@@ -57,19 +57,19 @@ EOF
 }
 
 _amass() {
-	amass enum -passive -d ${domain} | anew ${subdomains}
+	amass enum -passive -d ${domain} | dnsx -silent | anew ${subdomains}
 }
 
 _subfinder() {
-	subfinder -d ${domain} -all -silent | anew ${subdomains}
+	subfinder -d ${domain} -all -silent | dnsx -silent | anew ${subdomains}
 }
 
 _findomain() {
-	findomain -t ${domain} -q | anew ${subdomains}
+	findomain -t ${domain} -q | dnsx -silent | anew ${subdomains}
 }
 
 _sigsubfind3r() {
-	sigsubfind3r -d ${domain} --silent | anew ${subdomains}
+	sigsubfind3r -d ${domain} --silent | dnsx -silent | anew ${subdomains}
 }
 
 while [[ "${#}" -gt 0 && ."${1}" == .-* ]]
