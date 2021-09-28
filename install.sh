@@ -9,7 +9,7 @@ green="\e[32m"
 yellow="\e[33m"
 underline="\e[4m"
 
-echo -e " [+] Running install script for subdomains.sh requirements.\n"
+echo -e "[+] Running install script for subdomains.sh requirements.\n"
 
 tools=(
     curl
@@ -33,7 +33,7 @@ fi
 
 if [ ! -x "$(command -v go)" ]
 then
-    version=1.15.7
+    version=1.17.1
 
     curl -sL https://golang.org/dl/go${version}.linux-amd64.tar.gz -o /tmp/go${version}.linux-amd64.tar.gz
 
@@ -52,15 +52,15 @@ source ~/.profile
 
 # amass
 
-GO111MODULE=on go get github.com/OWASP/Amass/v3/...
+go get github.com/OWASP/Amass/v3/...
 
 # subfinder
 
-GO111MODULE=on go get -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder
+go get -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder
 
 # sigsubfind3r
 
-GO111MODULE=on go get -v github.com/signedsecurity/sigsubfind3r/cmd/sigsubfind3r
+go get -v github.com/signedsecurity/sigsubfind3r/cmd/sigsubfind3r
 
 script_directory="${HOME}/.local/bin"
 
@@ -88,3 +88,15 @@ go get -u github.com/tomnomnom/anew
 # dnsx
 
 go get -v github.com/projectdiscovery/dnsx/cmd/dnsx
+
+# subdomains.sh
+
+script_path="${script_directory}/subdomains.sh"
+
+if [ -e "${script_path}" ]
+then
+    rm ${script_path}
+fi
+
+curl -sL https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/subdomains.sh -o ${script_path}
+chmod u+x ${script_path}
