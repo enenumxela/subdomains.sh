@@ -21,7 +21,7 @@ sources=(
 sources_to_use=False
 sources_to_exclude=False
 
-output_directory="."
+output="./subdomains.txt"
 
 display_banner() {
 echo -e ${bold}${blue}"
@@ -47,7 +47,7 @@ display_usage() {
 	\r   -d,  --domain \t\t domain to enumerate subdomains for
 	\r   -eS, --exclude-source \t comma(,) separated tools to exclude
 	\r   -uS, --use-source\t\t comma(,) separated tools to use
-	\r   -oD, --output-dir \t\t output directory
+	\r   -o,  --output \t\t output file
 	\r        --setup\t\t\t setup requirements for this script
 	\r   -h,  --help \t\t\t display this help message and exit
 
@@ -57,19 +57,19 @@ EOF
 }
 
 _amass() {
-	amass enum -passive -d ${domain} | dnsx -silent | anew ${subdomains}
+	amass enum -passive -d ${domain} | dnsx -silent | anew ${output}
 }
 
 _subfinder() {
-	subfinder -d ${domain} -all -silent | dnsx -silent | anew ${subdomains}
+	subfinder -d ${domain} -all -silent | dnsx -silent | anew ${output}
 }
 
 _findomain() {
-	findomain -t ${domain} -q | dnsx -silent | anew ${subdomains}
+	findomain -t ${domain} -q | dnsx -silent | anew ${output}
 }
 
 _sigsubfind3r() {
-	sigsubfind3r -d ${domain} --silent | dnsx -silent | anew ${subdomains}
+	sigsubfind3r -d ${domain} --silent | dnsx -silent | anew ${output}
 }
 
 while [[ "${#}" -gt 0 && ."${1}" == .-* ]]
@@ -107,8 +107,8 @@ do
 			done
 			shift
 		;;
-		-oD | --output-dir)
-			output_directory="${2}"
+		-o | --output)
+			output="${2}"
 			shift
 		;;
 		--setup)
@@ -128,12 +128,13 @@ do
 done
 
 [[ ${domain} != False ]] && [[ ${domain} != "" ]] && {
-	subdomains="${output_directory}/${domain}-subdomains.txt"
+	directory="$(dirname ${output})"
 
-	[ ! -d ${output_directory} ] && {
-		mkdir -p ${output_directory}
-	}
-
+	if [ ! -d ${directory} ]
+	then
+		mkdir -p ${directory}
+	fi
+	
 	[ ${sources_to_use} == False ] && [ ${sources_to_exclude} == False ] && {
 		for source in "${sources[@]}"
 		do

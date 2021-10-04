@@ -35,11 +35,12 @@ To display this script's help message, use the `-h` flag:
    -d,  --domain 		 domain to enumerate subdomains for
    -eS, --exclude-source 	 comma(,) separated tools to exclude
    -uS, --use-source		 comma(,) separated tools to use
-   -oD, --output-dir 		 output directory
+   -o,  --output 		 output file
         --setup			 setup requirements for this script
    -h,  --help 			 display this help message and exit
 
  HAPPY HACKING :)
+
 ```
 
 ## Contribution
