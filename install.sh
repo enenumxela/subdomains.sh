@@ -17,7 +17,6 @@ echo -e ${bold}${blue}"
  |___/\__,_|_.__/ \__,_|\___/|_| |_| |_|\__,_|_|_| |_|___${red}(_)${blue}___/_| |_| ${yellow}v1.0.0${blue}
 
  ${yellow}SETUP SCRIPT...${blue}
- 
 "${reset}
 
 tools=(
