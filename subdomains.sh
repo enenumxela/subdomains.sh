@@ -11,11 +11,12 @@ underline="\e[4m"
 script_filename=${0##*/}
 
 domain=False
+live=False
 
 sources=(
 	amass
-	subfinder
 	findomain
+	subfinder
 	sigsubfind3r
 )
 sources_to_use=False
@@ -44,10 +45,11 @@ display_usage() {
 	\r   ${script_filename} [OPTIONS]
 
 	\r OPTIONS:
-	\r   -d,  --domain \t\t domain to enumerate subdomains for
-	\r   -eS, --exclude-source \t comma(,) separated tools to exclude
+	\r   -d,  --domain \t\t domain to gather subdomains for
 	\r   -uS, --use-source\t\t comma(,) separated tools to use
-	\r   -o,  --output \t\t output file
+	\r   -eS, --exclude-source \t comma(,) separated tools to exclude
+	\r        --live \t\t\t output live subdomains only
+	\r   -o,  --output \t\t output text file
 	\r        --setup\t\t\t setup requirements for this script
 	\r   -h,  --help \t\t\t display this help message and exit
 
@@ -57,19 +59,39 @@ EOF
 }
 
 _amass() {
-	amass enum -passive -d ${domain} | dnsx -silent | anew ${output}
+	if [ ${live} == True ]
+	then
+		amass enum -passive -d ${domain} | dnsx -silent | anew ${output}
+	else
+		amass enum -passive -d ${domain} | anew ${output}
+	fi
 }
 
 _subfinder() {
-	subfinder -d ${domain} -all -silent | dnsx -silent | anew ${output}
+	if [ ${live} == True ]
+	then
+		subfinder -d ${domain} -all -silent | dnsx -silent | anew ${output}
+	else
+		subfinder -d ${domain} -all -silent | anew ${output}
+	fi
 }
 
 _findomain() {
-	findomain -t ${domain} -q | dnsx -silent | anew ${output}
+	if [ ${live} == True ]
+	then
+		findomain -t ${domain} -q | dnsx -silent | anew ${output}
+	else
+		findomain -t ${domain} -q | anew ${output}
+	fi
 }
 
 _sigsubfind3r() {
-	sigsubfind3r -d ${domain} --silent | dnsx -silent | anew ${output}
+	if [ ${live} == True ]
+	then
+		sigsubfind3r -d ${domain} --silent | dnsx -silent | anew ${output}
+	else
+		sigsubfind3r -d ${domain} --silent | anew ${output}
+	fi
 }
 
 while [[ "${#}" -gt 0 && ."${1}" == .-* ]]
@@ -105,6 +127,10 @@ do
 					exit 1
 				fi
 			done
+			shift
+		;;
+		--live)
+			live=True
 			shift
 		;;
 		-o | --output)

@@ -33,7 +33,7 @@ fi
 
 if [ ! -x "$(command -v go)" ]
 then
-    version=1.17.1
+    version=1.17.6
 
     curl -sL https://golang.org/dl/go${version}.linux-amd64.tar.gz -o /tmp/go${version}.linux-amd64.tar.gz
 
@@ -52,21 +52,21 @@ source ~/.profile
 
 # amass
 
-go get github.com/OWASP/Amass/v3/...
+go install github.com/OWASP/Amass/v3/...@latest
 
 # subfinder
 
-go get -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder
+go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 
 # sigsubfind3r
 
-go get -v github.com/signedsecurity/sigsubfind3r/cmd/sigsubfind3r
+go install github.com/signedsecurity/sigsubfind3r/cmd/sigsubfind3r@latest
 
 script_directory="${HOME}/.local/bin"
 
 if [ ! -d ${script_directory} ]
 then
-    mkdir -p ${script_directory}
+	mkdir -p ${script_directory}
 fi
 
 # findomain
@@ -83,11 +83,11 @@ chmod u+x ${binary_path}
 
 # anew
 
-go get -u github.com/tomnomnom/anew
+go install github.com/tomnomnom/anew@latest
 
 # dnsx
 
-go get -v github.com/projectdiscovery/dnsx/cmd/dnsx
+go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest
 
 # subdomains.sh
 
@@ -95,7 +95,7 @@ script_path="${script_directory}/subdomains.sh"
 
 if [ -e "${script_path}" ]
 then
-    rm ${script_path}
+	rm ${script_path}
 fi
 
 curl -sL https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/subdomains.sh -o ${script_path}
