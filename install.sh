@@ -20,8 +20,6 @@ echo -e ${bold}${blue}"
  
 "${reset}
 
-# echo -e "[+] Running install script for subdomains.sh requirements.\n"
-
 tools=(
     curl
 )

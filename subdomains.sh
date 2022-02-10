@@ -23,6 +23,7 @@ sources_to_use=False
 sources_to_exclude=False
 
 output="./subdomains.txt"
+temp_output="$(dirname ${output})/.${output##*/}"
 
 display_banner() {
 echo -e ${bold}${blue}"
@@ -59,39 +60,19 @@ EOF
 }
 
 _amass() {
-	if [ ${live} == True ]
-	then
-		amass enum -passive -d ${domain} | dnsx -silent | anew ${output}
-	else
-		amass enum -passive -d ${domain} | anew ${output}
-	fi
+	amass enum -passive -d ${domain} | anew ${temp_output}
 }
 
 _subfinder() {
-	if [ ${live} == True ]
-	then
-		subfinder -d ${domain} -all -silent | dnsx -silent | anew ${output}
-	else
-		subfinder -d ${domain} -all -silent | anew ${output}
-	fi
+	subfinder -d ${domain} -all -silent | anew ${temp_output}
 }
 
 _findomain() {
-	if [ ${live} == True ]
-	then
-		findomain -t ${domain} -q | dnsx -silent | anew ${output}
-	else
-		findomain -t ${domain} -q | anew ${output}
-	fi
+	findomain -t ${domain} -q | anew ${temp_output}
 }
 
 _sigsubfind3r() {
-	if [ ${live} == True ]
-	then
-		sigsubfind3r -d ${domain} --silent | dnsx -silent | anew ${output}
-	else
-		sigsubfind3r -d ${domain} --silent | anew ${output}
-	fi
+	sigsubfind3r -d ${domain} --silent | anew ${temp_output}
 }
 
 while [[ "${#}" -gt 0 && ."${1}" == .-* ]]
@@ -135,6 +116,7 @@ do
 		;;
 		-o | --output)
 			output="${2}"
+			temp_output="$(dirname ${output})/.${output##*/}"
 			shift
 		;;
 		--setup)
@@ -185,6 +167,15 @@ done
 			done
 		}
 	}
+
+	if [ ${live} == True ]
+	then
+		cat ${temp_output} | dnsx -silent | anew -q ${output}
+	else
+		cat ${temp_output} | anew -q ${output}
+	fi
+
+	rm -rf ${temp_output}
 }
 
 exit 0

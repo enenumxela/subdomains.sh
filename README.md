@@ -2,14 +2,14 @@
 
 ![Made with Bash](https://img.shields.io/badge/made%20with-Bash-0040ff.svg) ![Maintenance](https://img.shields.io/badge/maintained%3F-yes-0040ff.svg) [![open issues](https://img.shields.io/github/issues-raw/enenumxela/subdomains.sh.svg?style=flat&color=0040ff)](https://github.com/enenumxela/subdomains.sh/issues?q=is:issue+is:open) [![closed issues](https://img.shields.io/github/issues-closed-raw/enenumxela/subdomains.sh.svg?style=flat&color=0040ff)](https://github.com/enenumxela/subdomains.sh/issues?q=is:issue+is:closed) [![license](https://img.shields.io/badge/license-MIT-gray.svg?colorB=0040FF)](https://github.com/enenumxela/subdomains.sh/blob/master/LICENSE) [![author](https://img.shields.io/badge/twitter-@enenumxela-0040ff.svg)](https://twitter.com/enenumxela)
 
-A wrapper around tools I use for subdomains gathering - [amass](https://github.com/OWASP/Amass), [subfinder](https://github.com/projectdiscovery/subfinder), [findomain](https://github.com/Edu4rdSHL/findomain) & [sigsubfind3r](http://github.com/signedsecurity/sigsubfind3r) - the goal being increasing gathering efficiency and automating the workflow. 
+A wrapper around tools I use for subdomains gathering - [amass](https://github.com/OWASP/Amass), [subfinder](https://github.com/projectdiscovery/subfinder), [findomain](https://github.com/Edu4rdSHL/findomain) & [sigsubfind3r](http://github.com/signedsecurity/sigsubfind3r) - and filtering out dead records from the gathered list of subdomains - [dnsx](https://github.com/projectdiscovery/dnsx). 
 
 ## Installation
 
-Clone this repository:
+Run the installation script:
 
 ```bash
-git clone https://github.com/enenumxela/subdomains.sh.git
+curl -s https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/install.sh | bash -
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ git clone https://github.com/enenumxela/subdomains.sh.git
 To display this script's help message, use the `-h` flag:
 
 ```bash
-./subdomains.sh -h
+subdomains.sh -h
 ```
 
 ```text
