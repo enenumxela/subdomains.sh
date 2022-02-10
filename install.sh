@@ -9,7 +9,18 @@ green="\e[32m"
 yellow="\e[33m"
 underline="\e[4m"
 
-echo -e "[+] Running install script for subdomains.sh requirements.\n"
+echo -e ${bold}${blue}"
+            _         _                       _                 _     
+  ___ _   _| |__   __| | ___  _ __ ___   __ _(_)_ __  ___   ___| |__  
+ / __| | | | '_ \ / _\` |/ _ \| '_ \` _ \ / _\` | | '_ \/ __| / __| '_ \ 
+ \__ \ |_| | |_) | (_| | (_) | | | | | | (_| | | | | \__  ${red}_${blue}\__ \ | | |
+ |___/\__,_|_.__/ \__,_|\___/|_| |_| |_|\__,_|_|_| |_|___${red}(_)${blue}___/_| |_| ${yellow}v1.0.0${blue}
+
+ ${yellow}SETUP SCRIPT...${blue}
+ 
+"${reset}
+
+# echo -e "[+] Running install script for subdomains.sh requirements.\n"
 
 tools=(
     curl
@@ -26,39 +37,56 @@ done
 
 if [ ${#missing_tools[@]} -gt 0 ]
 then
-    sudo apt -qq -y install ${missing_tools[@]}
+	echo -e " [+] ${missing_tools[@]}\n"
+
+	sudo apt -qq -y install ${missing_tools[@]}
 fi
 
 # golang
 
 if [ ! -x "$(command -v go)" ]
 then
-    version=1.17.6
+	version=1.17.6
 
-    curl -sL https://golang.org/dl/go${version}.linux-amd64.tar.gz -o /tmp/go${version}.linux-amd64.tar.gz
+	echo -e " [+] go${version}\n"
 
-    sudo tar -xzf /tmp/go${version}.linux-amd64.tar.gz -C /usr/local
+	curl -sL https://golang.org/dl/go${version}.linux-amd64.tar.gz -o /tmp/go${version}.linux-amd64.tar.gz
+
+	sudo tar -xzf /tmp/go${version}.linux-amd64.tar.gz -C /usr/local
 fi
 
 (grep -q "export PATH=\$PATH:/usr/local/go/bin" ~/.profile) || {
-    echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.profile
+	echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.profile
 }
 
 (grep -q "export PATH=\$PATH:${HOME}/go/bin" ~/.profile) || {
-    echo "export PATH=\$PATH:${HOME}/go/bin" >> ~/.profile
+	echo "export PATH=\$PATH:${HOME}/go/bin" >> ~/.profile
 }
 
 source ~/.profile
 
+# anew
+
+echo -e " [+] anew\n"
+
+go install github.com/tomnomnom/anew@latest
+
+
 # amass
+
+echo -e " [+] amass\n"
 
 go install github.com/OWASP/Amass/v3/...@latest
 
 # subfinder
 
+echo -e " [+] subfinder\n"
+
 go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 
 # sigsubfind3r
+
+echo -e " [+] sigsubfind3r\n"
 
 go install github.com/signedsecurity/sigsubfind3r/cmd/sigsubfind3r@latest
 
@@ -71,6 +99,8 @@ fi
 
 # findomain
 
+echo -e " [+] findomain\n"
+
 binary_path="${script_directory}/findomain"
 
 if [ -e "${binary_path}" ]
@@ -81,15 +111,15 @@ fi
 curl -sL https://github.com/Edu4rdSHL/findomain/releases/latest/download/findomain-linux -o ${binary_path}
 chmod u+x ${binary_path}
 
-# anew
-
-go install github.com/tomnomnom/anew@latest
-
 # dnsx
+
+echo -e " [+] dnsx\n"
 
 go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest
 
 # subdomains.sh
+
+echo -e " [+] subdomains.sh\n"
 
 script_path="${script_directory}/subdomains.sh"
 

@@ -32,10 +32,11 @@ To display this script's help message, use the `-h` flag:
    subdomains.sh [OPTIONS]
 
  OPTIONS:
-   -d,  --domain 		 domain to enumerate subdomains for
-   -eS, --exclude-source 	 comma(,) separated tools to exclude
+   -d,  --domain 		 domain to gather subdomains for
    -uS, --use-source		 comma(,) separated tools to use
-   -o,  --output 		 output file
+   -eS, --exclude-source 	 comma(,) separated tools to exclude
+        --live 			 output live subdomains only
+   -o,  --output 		 output text file
         --setup			 setup requirements for this script
    -h,  --help 			 display this help message and exit
 
