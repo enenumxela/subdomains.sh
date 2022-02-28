@@ -10,14 +10,49 @@ yellow="\e[33m"
 underline="\e[4m"
 
 echo -e ${bold}${blue}"
-            _         _                       _                 _     
-  ___ _   _| |__   __| | ___  _ __ ___   __ _(_)_ __  ___   ___| |__  
- / __| | | | '_ \ / _\` |/ _ \| '_ \` _ \ / _\` | | '_ \/ __| / __| '_ \ 
- \__ \ |_| | |_) | (_| | (_) | | | | | | (_| | | | | \__  ${red}_${blue}\__ \ | | |
- |___/\__,_|_.__/ \__,_|\___/|_| |_| |_|\__,_|_|_| |_|___${red}(_)${blue}___/_| |_| ${yellow}v1.0.0${blue}
-
- ${yellow}SETUP SCRIPT...${blue}
+           _         _                       _                 _     
+ ___ _   _| |__   __| | ___  _ __ ___   __ _(_)_ __  ___   ___| |__  
+/ __| | | | '_ \ / _\` |/ _ \| '_ \` _ \ / _\` | | '_ \/ __| / __| '_ \ 
+\__ \ |_| | |_) | (_| | (_) | | | | | | (_| | | | | \__  ${red}_${blue}\__ \ | | |
+|___/\__,_|_.__/ \__,_|\___/|_| |_| |_|\__,_|_|_| |_|___${red}(_)${blue}___/_| |_| ${yellow}v1.0.0${blue}
 "${reset}
+
+if [ "${SUDO_USER:-$USER}" != "${USER}" ]
+then
+	echo -e "${blue}[${red}-${blue}]${reset} failed!...ps.sh called with sudo!\n"
+	exit 1
+fi
+
+CMD_PREFIX=
+
+if [ ${UID} -gt 0 ] && [ -x "$(command -v sudo)" ]
+then
+	CMD_PREFIX="sudo"
+elif [ ${UID} -gt 0 ] && [ ! -x "$(command -v sudo)" ]
+then
+	echo -e "${blue}[${red}-${blue}]${reset} failed!...\`sudo\` command not found!\n"
+	exit 1
+fi
+
+DOWNLOAD_CMD=
+
+if command -v >&- curl
+then
+	DOWNLOAD_CMD="curl -sL"
+elif command -v >&- wget
+then
+	DOWNLOAD_CMD="wget --quiet --show-progres --continue --output-document=-"
+else
+	echo "${blue}[${red}-${blue}]${reset} Could not find wget/cURL" >&2
+	exit 1
+fi
+
+script_directory="${HOME}/.local/bin"
+
+if [ ! -d ${script_directory} ]
+then
+	mkdir -p ${script_directory}
+fi
 
 tools=(
     curl
@@ -36,7 +71,7 @@ if [ ${#missing_tools[@]} -gt 0 ]
 then
 	echo -e " [+] ${missing_tools[@]}\n"
 
-	sudo apt -qq -y install ${missing_tools[@]}
+	eval ${CMD_PREFIX} apt-get -qq -y install ${missing_tools[@]}
 fi
 
 # golang
@@ -47,9 +82,9 @@ then
 
 	echo -e " [+] go${version}\n"
 
-	curl -sL https://golang.org/dl/go${version}.linux-amd64.tar.gz -o /tmp/go${version}.linux-amd64.tar.gz
+	eval ${DOWNLOAD_CMD} https://golang.org/dl/go${version}.linux-amd64.tar.gz -o /tmp/go${version}.linux-amd64.tar.gz
 
-	sudo tar -xzf /tmp/go${version}.linux-amd64.tar.gz -C /usr/local
+	eval ${CMD_PREFIX} tar -xzf /tmp/go${version}.linux-amd64.tar.gz -C /usr/local
 fi
 
 (grep -q "export PATH=\$PATH:/usr/local/go/bin" ~/.profile) || {
@@ -87,26 +122,16 @@ echo -e " [+] sigsubfind3r\n"
 
 go install github.com/signedsecurity/sigsubfind3r/cmd/sigsubfind3r@latest
 
-script_directory="${HOME}/.local/bin"
-
-if [ ! -d ${script_directory} ]
-then
-	mkdir -p ${script_directory}
-fi
-
 # findomain
 
 echo -e " [+] findomain\n"
 
-binary_path="${script_directory}/findomain"
+binary_path="/usr/local/bin/findomain"
 
-if [ -e "${binary_path}" ]
-then
-    rm ${binary_path}
-fi
-
-curl -sL https://github.com/Edu4rdSHL/findomain/releases/latest/download/findomain-linux -o ${binary_path}
-chmod u+x ${binary_path}
+eval ${CMD_PREFIX} bash <<EOF
+eval ${DOWNLOAD_CMD} https://github.com/Edu4rdSHL/findomain/releases/latest/download/findomain-linux > ${binary_path}
+chmod a+x ${binary_path}
+EOF
 
 # dnsx
 
@@ -125,5 +150,5 @@ then
 	rm ${script_path}
 fi
 
-curl -sL https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/subdomains.sh -o ${script_path}
+eval ${DOWNLOAD_CMD} https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/subdomains.sh > ${script_path}
 chmod u+x ${script_path}
