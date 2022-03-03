@@ -23,7 +23,6 @@ sources_to_use=False
 sources_to_exclude=False
 
 output="./subdomains.txt"
-temp_output="$(dirname ${output})/.${output##*/}"
 
 display_banner() {
 echo -e ${bold}${blue}"
@@ -59,6 +58,19 @@ display_usage() {
 EOF
 }
 
+DOWNLOAD_CMD=
+
+if command -v >&- curl
+then
+	DOWNLOAD_CMD="curl --silent"
+elif command -v >&- wget
+then
+	DOWNLOAD_CMD="wget --quiet --show-progres --continue --output-document=-"
+else
+	echo "${blue}[${red}-${blue}]${reset} Could not find wget/cURL" >&2
+	exit 1
+fi
+
 _amass() {
 	amass enum -passive -d ${domain} | anew ${temp_output}
 }
@@ -74,19 +86,6 @@ _findomain() {
 _sigsubfind3r() {
 	sigsubfind3r -d ${domain} --silent | anew ${temp_output}
 }
-
-DOWNLOAD_CMD=
-
-if command -v >&- curl
-then
-	DOWNLOAD_CMD="curl --silent"
-elif command -v >&- wget
-then
-	DOWNLOAD_CMD="wget --quiet --show-progres --continue --output-document=-"
-else
-	echo "${blue}[${red}-${blue}]${reset} Could not find wget/cURL" >&2
-	exit 1
-fi
 
 while [[ "${#}" -gt 0 && ."${1}" == .-* ]]
 do
@@ -107,6 +106,7 @@ do
 					exit 1
 				fi
 			done
+
 			shift
 		;;
 		-uS | --use-source)
@@ -121,15 +121,14 @@ do
 					exit 1
 				fi
 			done
+
 			shift
 		;;
 		--live)
 			live=True
-			shift
 		;;
 		-o | --output)
 			output="${2}"
-			temp_output="$(dirname ${output})/.${output##*/}"
 			shift
 		;;
 		--setup)
@@ -145,8 +144,11 @@ do
 			exit 1
 		;;
 	esac
+
 	shift
 done
+
+display_banner
 
 if [ "${SUDO_USER:-$USER}" != "${USER}" ]
 then
@@ -154,7 +156,7 @@ then
 	exit 1
 fi
 
-if [[ ${domain} != False ]] || [[ ${domain} != "" ]]
+if [[ ${domain} == False ]] || [[ ${domain} == "" ]]
 then
 	echo -e "\n${blue}[${red}-${blue}]${reset} failed!...Missing -d/--domain argument!\n"
 	exit 1
@@ -166,6 +168,8 @@ if [ ! -d ${directory} ]
 then
 	mkdir -p ${directory}
 fi
+
+temp_output="${directory}/.${output##*/}"
 
 [ ${sources_to_use} == False ] && [ ${sources_to_exclude} == False ] && {
 	for source in "${sources[@]}"
