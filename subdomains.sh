@@ -11,17 +11,28 @@ underline="\e[4m"
 script_filename=${0##*/}
 
 domain=False
-live=False
 
-sources=(
+# passive
+run_persive=True
+passive_sources=(
 	amass
 	findomain
 	subfinder
 	sigsubfind3r
 )
-sources_to_use=False
-sources_to_exclude=False
+passive_sources_to_use=False
+passive_sources_to_exclude=False
+# semi_active
+run_semi_active=True
+# semi_active: dictionary
+run_dictionary=True
+# semi_active: permutation
+run_permutation=True
+# semi_active: reverseDNS
+run_reverseDNS=True
+# active
 
+_output="./.subdomains.txt"
 output="./subdomains.txt"
 
 display_banner() {
@@ -45,13 +56,15 @@ display_usage() {
 	\r  ${script_filename} [OPTIONS]
 
 	\rOPTIONS:
-	\r  -d,  --domain \t\t domain to gather subdomains for
-	\r  -uS, --use-source\t\t comma(,) separated tools to use
-	\r  -eS, --exclude-source \t comma(,) separated tools to exclude
-	\r       --live \t\t\t output live subdomains only
-	\r  -o,  --output \t\t output text file
-	\r       --setup\t\t\t setup requirements for this script
-	\r  -h,  --help \t\t\t display this help message and exit
+	\r  -d,  --domain \t\t\t domain to gather subdomains for
+	\r       --use-passive-source\t\t comma(,) separated tools to use
+	\r       --exclude-passive-source \t comma(,) separated tools to exclude
+	\r       --skip-semi-active \t\t skip semi active techniques
+	\r       --skip-dictionary \t\t skip dictionary brute forcing
+	\r       --skip-permutation \t\t skip permutations brute forcing
+	\r  -o,  --output \t\t\t output text file
+	\r       --setup\t\t\t\t setup requirements for this script
+	\r  -h,  --help \t\t\t\t display this help message and exit
 
 	\r ${red}${bold}HAPPY HACKING ${yellow}:)${reset}
 
@@ -71,22 +84,6 @@ else
 	exit 1
 fi
 
-_amass() {
-	amass enum -passive -d ${domain} | anew ${temp_output}
-}
-
-_subfinder() {
-	subfinder -d ${domain} -all -silent | anew ${temp_output}
-}
-
-_findomain() {
-	findomain -t ${domain} -q | anew ${temp_output}
-}
-
-_sigsubfind3r() {
-	sigsubfind3r -d ${domain} --silent | anew ${temp_output}
-}
-
 while [[ "${#}" -gt 0 && ."${1}" == .-* ]]
 do
 	case ${1} in
@@ -94,13 +91,13 @@ do
 			domain=${2}
 			shift
 		;;
-		-eS | --exclude-source)
-			sources_to_exclude=${2}
-			sources_to_exclude_dictionary=${sources_to_exclude//,/ }
+		--use-passive-source)
+			passive_sources_to_use=${2}
+			passive_sources_to_use_dictionary=${passive_sources_to_use//,/ }
 
-			for i in ${sources_to_exclude_dictionary}
+			for i in ${passive_sources_to_use_dictionary}
 			do
-				if [[ ! " ${sources[@]} " =~ " ${i} " ]]
+				if [[ ! " ${passive_sources[@]} " =~ " ${i} " ]]
 				then
 					echo -e "${blue}[${red}-${blue}]${reset} Unknown Task: ${i}"
 					exit 1
@@ -109,13 +106,13 @@ do
 
 			shift
 		;;
-		-uS | --use-source)
-			sources_to_use=${2}
-			sources_to_use_dictionary=${sources_to_use//,/ }
+		--exclude-passive-source)
+			passive_sources_to_exclude=${2}
+			passive_sources_to_exclude_dictionary=${passive_sources_to_exclude//,/ }
 
-			for i in ${sources_to_use_dictionary}
+			for i in ${passive_sources_to_exclude_dictionary}
 			do
-				if [[ ! " ${sources[@]} " =~ " ${i} " ]]
+				if [[ ! " ${passive_sources[@]} " =~ " ${i} " ]]
 				then
 					echo -e "${blue}[${red}-${blue}]${reset} Unknown Task: ${i}"
 					exit 1
@@ -124,10 +121,17 @@ do
 
 			shift
 		;;
-		--live)
-			live=True
+		--skip-semi-active)
+			run_semi_active=False
+		;;
+		--skip-dictionary)
+			run_dictionary=False
+		;;
+		--skip-permutation)
+			run_permutation=False
 		;;
 		-o | --output)
+			_output="$(dirname ${2})/.${2##*/}"
 			output="${2}"
 			shift
 		;;
@@ -169,40 +173,73 @@ then
 	mkdir -p ${directory}
 fi
 
-temp_output="${directory}/.${output##*/}"
+# Run passive discovery
+_amass() {
+	amass enum -passive -d ${domain} | anew ${_output}
+}
 
-[ ${sources_to_use} == False ] && [ ${sources_to_exclude} == False ] && {
-	for source in "${sources[@]}"
-	do
-		_${source}
-	done
-} || {
-	[ ${sources_to_use} != False ] && {
-		for source in "${sources_to_use_dictionary[@]}"
+_subfinder() {
+	subfinder -d ${domain} -all -silent | anew ${_output}
+}
+
+_findomain() {
+	findomain -t ${domain} --quiet | anew ${_output}
+}
+
+_sigsubfind3r() {
+	sigsubfind3r -d ${domain} --silent | anew ${_output}
+}
+
+if [ ${run_persive} == True ]
+then
+	if [ ${passive_sources_to_use} == False ] && [ ${passive_sources_to_exclude} == False ]
+	then
+		for source in "${passive_sources[@]}"
 		do
 			_${source}
 		done
-	}
-	[ ${sources_to_exclude} != False ] && {
-		for source in ${sources[@]}
-		do
-			if [[ " ${sources_to_exclude_dictionary[@]} " =~ " ${source} " ]]
-			then
-				continue
-			else
+	else
+		if [ ${passive_sources_to_use} != False ]
+		then
+			for source in "${passive_sources_to_use_dictionary[@]}"
+			do
 				_${source}
-			fi
-		done
-	}
-}
+			done
+		fi
 
-if [ ${live} == True ]
-then
-	cat ${temp_output} | dnsx -silent | anew -q ${output}
-else
-	cat ${temp_output} | anew -q ${output}
+		if [ ${passive_sources_to_exclude} != False ]
+		then
+			for source in ${passive_sources[@]}
+			do
+				if [[ " ${passive_sources_to_exclude_dictionary[@]} " =~ " ${source} " ]]
+				then
+					continue
+				else
+					_${source}
+				fi
+			done
+		fi
+	fi
 fi
 
-rm -rf ${temp_output}
+# Run semi active discovery
+if [ ${run_semi_active} == True ]
+then
+	if [ ${run_permutation} == True ]
+	then
+		cat ${_output} | dnsgen - | dnsx -t 500 -silent | anew ${_output}
+	fi
+
+	if [ ${run_reverseDNS} == True ]
+	then
+		cat ${_output} | uniq | dnsx -a -resp-only -t 500 -silent | hakrevdns --domain --threads=20 | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | anew ${_output}
+	fi
+fi
+
+# Filter out live subdomains from temporary output into output
+cat ${_output} | dnsx -t 500 -silent | anew -q ${output}
+
+# Remove temporary output
+rm -rf ${_output}
 
 exit 0

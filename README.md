@@ -21,27 +21,27 @@ subdomains.sh -h
 ```
 
 ```text
+           _         _                       _                 _     
+ ___ _   _| |__   __| | ___  _ __ ___   __ _(_)_ __  ___   ___| |__  
+/ __| | | | '_ \ / _` |/ _ \| '_ ` _ \ / _` | | '_ \/ __| / __| '_ \ 
+\__ \ |_| | |_) | (_| | (_) | | | | | | (_| | | | | \__  _\__ \ | | |
+|___/\__,_|_.__/ \__,_|\___/|_| |_| |_|\__,_|_|_| |_|___(_)___/_| |_| v1.0.0
 
-            _         _                       _                 _     
-  ___ _   _| |__   __| | ___  _ __ ___   __ _(_)_ __  ___   ___| |__  
- / __| | | | '_ \ / _` |/ _ \| '_ ` _ \ / _` | | '_ \/ __| / __| '_ \ 
- \__ \ |_| | |_) | (_| | (_) | | | | | | (_| | | | | \__  _\__ \ | | |
- |___/\__,_|_.__/ \__,_|\___/|_| |_| |_|\__,_|_|_| |_|___(_)___/_| |_| v1.0.0
+USAGE:
+  subdomains.sh [OPTIONS]
 
- USAGE:
-   subdomains.sh [OPTIONS]
-
- OPTIONS:
-   -d,  --domain 		 domain to gather subdomains for
-   -uS, --use-source		 comma(,) separated tools to use
-   -eS, --exclude-source 	 comma(,) separated tools to exclude
-        --live 			 output live subdomains only
-   -o,  --output 		 output text file
-        --setup			 setup requirements for this script
-   -h,  --help 			 display this help message and exit
+OPTIONS:
+  -d,  --domain 			 domain to gather subdomains for
+       --use-passive-source		 comma(,) separated tools to use
+       --exclude-passive-source 	 comma(,) separated tools to exclude
+       --skip-semi-active 		 skip semi active techniques
+       --skip-dictionary 		 skip dictionary brute forcing
+       --skip-permutation 		 skip permutations brute forcing
+  -o,  --output 			 output text file
+       --setup				 setup requirements for this script
+  -h,  --help 				 display this help message and exit
 
  HAPPY HACKING :)
-
 ```
 
 ## Contribution

@@ -69,9 +69,18 @@ done
 
 if [ ${#missing_tools[@]} -gt 0 ]
 then
-	echo -e " [+] ${missing_tools[@]}\n"
+	echo -e "\n[+] ${missing_tools[@]}\n"
 
 	eval ${CMD_PREFIX} apt-get -qq -y install ${missing_tools[@]}
+fi
+
+# python3
+
+if [ ! -x "$(command -v python3)" ] || [ ! -x "$(command -v pip3)" ]
+then
+	echo -e "\n[+] python3\n"
+
+	eval ${CMD_PREFIX} apt-get install -qq -y python3 python3-pip
 fi
 
 # golang
@@ -80,7 +89,7 @@ if [ ! -x "$(command -v go)" ]
 then
 	version=1.17.6
 
-	echo -e " [+] go${version}\n"
+	echo -e "\n[+] go${version}\n"
 
 	eval ${DOWNLOAD_CMD} https://golang.org/dl/go${version}.linux-amd64.tar.gz -o /tmp/go${version}.linux-amd64.tar.gz
 
@@ -99,32 +108,31 @@ source ~/.profile
 
 # anew
 
-echo -e " [+] anew\n"
+echo -e "\n[+] anew\n"
 
 go install github.com/tomnomnom/anew@latest
 
-
 # amass
 
-echo -e " [+] amass\n"
+echo -e "\n[+] amass\n"
 
 go install github.com/OWASP/Amass/v3/...@latest
 
 # subfinder
 
-echo -e " [+] subfinder\n"
+echo -e "\n[+] subfinder\n"
 
 go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 
 # sigsubfind3r
 
-echo -e " [+] sigsubfind3r\n"
+echo -e "\n[+] sigsubfind3r\n"
 
 go install github.com/signedsecurity/sigsubfind3r/cmd/sigsubfind3r@latest
 
 # findomain
 
-echo -e " [+] findomain\n"
+echo -e "\n[+] findomain\n"
 
 binary_path="/usr/local/bin/findomain"
 
@@ -133,15 +141,27 @@ eval ${DOWNLOAD_CMD} https://github.com/Edu4rdSHL/findomain/releases/latest/down
 chmod a+x ${binary_path}
 EOF
 
+# dnsgen
+
+echo -e "\n[+] dnsgen\n"
+
+pip3 install dnsgen
+
+# hakrevdns
+
+echo -e "\n[+] hakrevdns\n"
+
+go install github.com/hakluke/hakrevdns@latest
+
 # dnsx
 
-echo -e " [+] dnsx\n"
+echo -e "\n[+] dnsx\n"
 
 go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest
 
 # subdomains.sh
 
-echo -e " [+] subdomains.sh\n"
+echo -e "\n[+] subdomains.sh\n"
 
 script_path="${script_directory}/subdomains.sh"
 
