@@ -12,7 +12,9 @@ script_filename=${0##*/}
 
 domain=False
 
-# passive
+dictionary_wordlist=False
+permutation_wordlist=False
+
 run_persive=True
 passive_sources=(
 	amass
@@ -22,15 +24,11 @@ passive_sources=(
 )
 passive_sources_to_use=False
 passive_sources_to_exclude=False
-# semi_active
+
 run_semi_active=True
-# semi_active: dictionary
 run_dictionary=True
-# semi_active: permutation
 run_permutation=True
-# semi_active: reverseDNS
 run_reverseDNS=True
-# active
 
 _output="./.subdomains.txt"
 output="./subdomains.txt"
@@ -57,11 +55,13 @@ display_usage() {
 
 	\rOPTIONS:
 	\r  -d,  --domain \t\t\t domain to gather subdomains for
+	\r  -dW,  --dictionary-wordlist \t wordlist for dictionary brute forcing
+	\r  -pW,  --permutation-wordlist \t wordlist for permutation brute forcing
 	\r       --use-passive-source\t\t comma(,) separated tools to use
 	\r       --exclude-passive-source \t comma(,) separated tools to exclude
 	\r       --skip-semi-active \t\t skip semi active techniques
 	\r       --skip-dictionary \t\t skip dictionary brute forcing
-	\r       --skip-permutation \t\t skip permutations brute forcing
+	\r       --skip-permutation \t\t skip permutation brute forcing
 	\r  -o,  --output \t\t\t output text file
 	\r       --setup\t\t\t\t install/update this script & dependencies
 	\r  -h,  --help \t\t\t\t display this help message and exit
@@ -89,6 +89,14 @@ do
 	case ${1} in
 		-d | --domain)
 			domain=${2}
+			shift
+		;;
+		-dW | --dictionary-wordlist)
+			dictionary_wordlist=${2}
+			shift
+		;;
+		-pW | --permutation-wordlist)
+			permutation_wordlist=${2}
 			shift
 		;;
 		--use-passive-source)
@@ -175,19 +183,19 @@ fi
 
 # Run passive discovery
 _amass() {
-	amass enum -passive -d ${domain} | anew ${_output}
+	amass enum -passive -d ${domain} | tee -a ${_output}
 }
 
 _subfinder() {
-	subfinder -d ${domain} -all -silent | anew ${_output}
+	subfinder -d ${domain} -all -silent | tee -a ${_output}
 }
 
 _findomain() {
-	findomain -t ${domain} --quiet | anew ${_output}
+	findomain -t ${domain} --quiet | tee -a ${_output}
 }
 
 _sigsubfind3r() {
-	sigsubfind3r -d ${domain} --silent | anew ${_output}
+	sigsubfind3r -d ${domain} --silent | tee -a ${_output}
 }
 
 if [ ${run_persive} == True ]
@@ -225,19 +233,29 @@ fi
 # Run semi active discovery
 if [ ${run_semi_active} == True ]
 then
+	if [ ${run_dictionary} == True ] && [ ${dictionary_wordlist} != False ]
+	then
+		dnsx -d ${domain} -w ${dictionary_wordlist} -t 2000 -silent | tee -a ${_output}
+	fi
+
 	if [ ${run_permutation} == True ]
 	then
-		cat ${_output} | dnsgen - | dnsx -t 500 -silent | anew ${_output}
+		if [ ${permutation_wordlist} != False ]
+		then
+			cat ${_output} | uniq | dnsgen -w ${permutation_wordlist} - | dnsx -t 2000 -silent | tee -a ${_output}
+		else
+			cat ${_output} | uniq | dnsgen - | dnsx -t 2000 -silent | tee -a ${_output}
+		fi
 	fi
 
 	if [ ${run_reverseDNS} == True ]
 	then
-		cat ${_output} | uniq | dnsx -a -resp-only -t 500 -silent | hakrevdns --domain --threads=20 | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | anew ${_output}
+		cat ${_output} | uniq | dnsx -a -resp-only -silent | hakrevdns --domain --threads=20 | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${_output}
 	fi
 fi
 
 # Filter out live subdomains from temporary output into output
-cat ${_output} | dnsx -t 500 -silent | anew -q ${output}
+cat ${_output} | dnsx -silent | anew -q ${output}
 
 # Remove temporary output
 rm -rf ${_output}
