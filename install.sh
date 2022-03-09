@@ -15,11 +15,12 @@ echo -e ${bold}${blue}"
 / __| | | | '_ \ / _\` |/ _ \| '_ \` _ \ / _\` | | '_ \/ __| / __| '_ \ 
 \__ \ |_| | |_) | (_| | (_) | | | | | | (_| | | | | \__  ${red}_${blue}\__ \ | | |
 |___/\__,_|_.__/ \__,_|\___/|_| |_| |_|\__,_|_|_| |_|___${red}(_)${blue}___/_| |_| ${yellow}v1.0.0${blue}
-"${reset}
+
+Installation script..."${reset}
 
 if [ "${SUDO_USER:-$USER}" != "${USER}" ]
 then
-	echo -e "${blue}[${red}-${blue}]${reset} failed!...ps.sh called with sudo!\n"
+	echo -e "\n${blue}[${red}-${blue}]${reset} failed!...ps.sh called with sudo!\n"
 	exit 1
 fi
 
@@ -30,7 +31,7 @@ then
 	CMD_PREFIX="sudo"
 elif [ ${UID} -gt 0 ] && [ ! -x "$(command -v sudo)" ]
 then
-	echo -e "${blue}[${red}-${blue}]${reset} failed!...\`sudo\` command not found!\n"
+	echo -e "\n${blue}[${red}-${blue}]${reset} failed!...\`sudo\` command not found!\n"
 	exit 1
 fi
 
@@ -43,7 +44,7 @@ elif command -v >&- wget
 then
 	DOWNLOAD_CMD="wget --quiet --show-progres --continue --output-document=-"
 else
-	echo "${blue}[${red}-${blue}]${reset} Could not find wget/cURL" >&2
+	echo "\n${blue}[${red}-${blue}]${reset} Could not find wget/cURL\n" >&2
 	exit 1
 fi
 
@@ -69,18 +70,9 @@ done
 
 if [ ${#missing_tools[@]} -gt 0 ]
 then
-	echo -e "\n[+] ${missing_tools[@]}\n"
+	echo -e "[+] ${missing_tools[@]}\n"
 
 	eval ${CMD_PREFIX} apt-get -qq -y install ${missing_tools[@]}
-fi
-
-# python3
-
-if [ ! -x "$(command -v python3)" ] || [ ! -x "$(command -v pip3)" ]
-then
-	echo -e "\n[+] python3\n"
-
-	eval ${CMD_PREFIX} apt-get install -qq -y python3 python3-pip
 fi
 
 # golang
@@ -90,6 +82,9 @@ then
 	version=1.17.6
 
 	echo -e "\n[+] go${version}\n"
+
+	https://golang.org/dl/go1.17.6.linux-amd64.tar.gz -o /tmp/go1.17.6.linux-amd64.tar.gz
+	tar -xzf /tmp/go1.17.6.linux-amd64.tar.gz -C /usr/local
 
 	eval ${DOWNLOAD_CMD} https://golang.org/dl/go${version}.linux-amd64.tar.gz -o /tmp/go${version}.linux-amd64.tar.gz
 
@@ -106,11 +101,14 @@ fi
 
 source ~/.profile
 
-# anew
+# python3
 
-echo -e "\n[+] anew\n"
+if [ ! -x "$(command -v python3)" ] || [ ! -x "$(command -v pip3)" ]
+then
+	echo -e "\n[+] python3\n"
 
-go install github.com/tomnomnom/anew@latest
+	eval ${CMD_PREFIX} apt-get install -qq -y python3 python3-pip
+fi
 
 # amass
 
@@ -147,17 +145,23 @@ echo -e "\n[+] dnsgen\n"
 
 pip3 install dnsgen
 
+# dnsx
+
+echo -e "\n[+] dnsx\n"
+
+go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest
+
 # hakrevdns
 
 echo -e "\n[+] hakrevdns\n"
 
 go install github.com/hakluke/hakrevdns@latest
 
-# dnsx
+# anew
 
-echo -e "\n[+] dnsx\n"
+echo -e "\n[+] anew\n"
 
-go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest
+go install github.com/tomnomnom/anew@latest
 
 # subdomains.sh
 

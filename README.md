@@ -2,15 +2,14 @@
 
 ![Made with Bash](https://img.shields.io/badge/made%20with-Bash-0040ff.svg) ![Maintenance](https://img.shields.io/badge/maintained%3F-yes-0040ff.svg) [![open issues](https://img.shields.io/github/issues-raw/enenumxela/subdomains.sh.svg?style=flat&color=0040ff)](https://github.com/enenumxela/subdomains.sh/issues?q=is:issue+is:open) [![closed issues](https://img.shields.io/github/issues-closed-raw/enenumxela/subdomains.sh.svg?style=flat&color=0040ff)](https://github.com/enenumxela/subdomains.sh/issues?q=is:issue+is:closed) [![license](https://img.shields.io/badge/license-MIT-gray.svg?colorB=0040FF)](https://github.com/enenumxela/subdomains.sh/blob/master/LICENSE) [![author](https://img.shields.io/badge/twitter-@enenumxela-0040ff.svg)](https://twitter.com/enenumxela)
 
-A wrapper around tools I use for subdomains gathering - [amass](https://github.com/OWASP/Amass), [subfinder](https://github.com/projectdiscovery/subfinder), [findomain](https://github.com/Edu4rdSHL/findomain) & [sigsubfind3r](http://github.com/signedsecurity/sigsubfind3r) - and filtering out dead records from the gathered list of subdomains - [dnsx](https://github.com/projectdiscovery/dnsx). 
+`subdomains.sh` wrapper around tools I use for subdomain enumeration on a given domain. This script is written with the aim to automate the workflow.
 
-## Installation
+## Resources
 
-Run the installation script:
-
-```bash
-curl -s https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/install.sh | bash -
-```
+* [Usage](#usage)
+* [Installation](#installation)
+* [Credits](#credits)
+* [Contribution](#contribution)
 
 ## Usage
 
@@ -43,6 +42,23 @@ OPTIONS:
 
  HAPPY HACKING :)
 ```
+
+## Installation
+
+Run the installation script:
+
+```bash
+curl -s https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/install.sh | bash -
+```
+
+## Credits
+
+Credit goes to the authors of the various tools used in this script:
+
+* [@OWASP](https://github.com/OWASP) for [amass](https://github.com/OWASP/Amass)
+* [@Edu4rdSHL](https://github.com/Edu4rdSHL) for [findomain](https://github.com/Edu4rdSHL/findomain)
+* [@signedsecurity](http://github.com/signedsecurity) for [sigsubfind3r](http://github.com/signedsecurity/sigsubfind3r)
+* [@projectdiscovery](https://github.com/projectdiscovery) for [subfinder](https://github.com/projectdiscovery/subfinder) & [dnsx](https://github.com/projectdiscovery/dnsx)
 
 ## Contribution
 

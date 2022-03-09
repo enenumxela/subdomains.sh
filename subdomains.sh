@@ -63,7 +63,7 @@ display_usage() {
 	\r       --skip-dictionary \t\t skip dictionary brute forcing
 	\r       --skip-permutation \t\t skip permutations brute forcing
 	\r  -o,  --output \t\t\t output text file
-	\r       --setup\t\t\t\t setup requirements for this script
+	\r       --setup\t\t\t\t install/update this script & dependencies
 	\r  -h,  --help \t\t\t\t display this help message and exit
 
 	\r ${red}${bold}HAPPY HACKING ${yellow}:)${reset}
@@ -99,7 +99,7 @@ do
 			do
 				if [[ ! " ${passive_sources[@]} " =~ " ${i} " ]]
 				then
-					echo -e "${blue}[${red}-${blue}]${reset} Unknown Task: ${i}"
+					echo -e "${b"echo 'export PATH=${HOME}/.local/bin' >> /home/{{user `username`}}/.profile",lue}[${red}-${blue}]${reset} Unknown Task: ${i}"
 					exit 1
 				fi
 			done
