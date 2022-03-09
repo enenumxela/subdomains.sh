@@ -55,8 +55,8 @@ display_usage() {
 
 	\rOPTIONS:
 	\r  -d,  --domain \t\t\t domain to gather subdomains for
-	\r  -dW,  --dictionary-wordlist \t wordlist for dictionary brute forcing
-	\r  -pW,  --permutation-wordlist \t wordlist for permutation brute forcing
+	\r  -dW,  --dictionary-wordlist \t\t wordlist for dictionary brute forcing
+	\r  -pW,  --permutation-wordlist \t\t wordlist for permutation brute forcing
 	\r       --use-passive-source\t\t comma(,) separated tools to use
 	\r       --exclude-passive-source \t comma(,) separated tools to exclude
 	\r       --skip-semi-active \t\t skip semi active techniques

@@ -31,16 +31,19 @@ USAGE:
 
 OPTIONS:
   -d,  --domain 			 domain to gather subdomains for
+  -dW,  --dictionary-wordlist 		 wordlist for dictionary brute forcing
+  -pW,  --permutation-wordlist 		 wordlist for permutation brute forcing
        --use-passive-source		 comma(,) separated tools to use
        --exclude-passive-source 	 comma(,) separated tools to exclude
        --skip-semi-active 		 skip semi active techniques
        --skip-dictionary 		 skip dictionary brute forcing
-       --skip-permutation 		 skip permutations brute forcing
+       --skip-permutation 		 skip permutation brute forcing
   -o,  --output 			 output text file
-       --setup				 setup requirements for this script
+       --setup				 install/update this script & dependencies
   -h,  --help 				 display this help message and exit
 
  HAPPY HACKING :)
+
 ```
 
 ## Installation
