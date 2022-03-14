@@ -54,17 +54,17 @@ display_usage() {
 	\r  ${script_filename} [OPTIONS]
 
 	\rOPTIONS:
-	\r  -d,  --domain \t\t\t domain to gather subdomains for
-	\r  -dW,  --dictionary-wordlist \t\t wordlist for dictionary brute forcing
-	\r  -pW,  --permutation-wordlist \t\t wordlist for permutation brute forcing
+	\r   -d, --domain \t\t\t domain to gather subdomains for
+	\r  -dW, --dictionary-wordlist \t\t wordlist for dictionary brute forcing
+	\r  -pW, --permutation-wordlist \t\t wordlist for permutation brute forcing
 	\r       --use-passive-source\t\t comma(,) separated tools to use
 	\r       --exclude-passive-source \t comma(,) separated tools to exclude
 	\r       --skip-semi-active \t\t skip semi active techniques
 	\r       --skip-dictionary \t\t skip dictionary brute forcing
 	\r       --skip-permutation \t\t skip permutation brute forcing
-	\r  -o,  --output \t\t\t output text file
+	\r   -o, --output \t\t\t output text file
 	\r       --setup\t\t\t\t install/update this script & dependencies
-	\r  -h,  --help \t\t\t\t display this help message and exit
+	\r   -h, --help \t\t\t\t display this help message and exit
 
 	\r ${red}${bold}HAPPY HACKING ${yellow}:)${reset}
 
@@ -235,22 +235,22 @@ if [ ${run_semi_active} == True ]
 then
 	if [ ${run_dictionary} == True ] && [ ${dictionary_wordlist} != False ]
 	then
-		dnsx -d ${domain} -w ${dictionary_wordlist} -t 2000 -silent | tee -a ${_output}
+		dnsx -d ${domain} -w ${dictionary_wordlist} -silent | tee -a ${_output}
 	fi
 
 	if [ ${run_permutation} == True ]
 	then
 		if [ ${permutation_wordlist} != False ]
 		then
-			cat ${_output} | uniq | dnsgen -w ${permutation_wordlist} - | dnsx -t 2000 -silent | tee -a ${_output}
+			cat ${_output} | sort -u | dnsgen -w ${permutation_wordlist} - | dnsx -silent | tee -a ${_output}
 		else
-			cat ${_output} | uniq | dnsgen - | dnsx -t 2000 -silent | tee -a ${_output}
+			cat ${_output} | sort -u | dnsgen - | dnsx -silent | tee -a ${_output}
 		fi
 	fi
 
 	if [ ${run_reverseDNS} == True ]
 	then
-		cat ${_output} | uniq | dnsx -a -resp-only -silent | hakrevdns --domain --threads=20 | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${_output}
+		cat ${_output} | sort -u | dnsx -a -resp-only -silent | hakrevdns --domain --threads=10 | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${_output}
 	fi
 fi
 
