@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
-bold="\e[1m"
 red="\e[31m"
 cyan="\e[36m"
 blue="\e[34m"
-reset="\e[0m"
 green="\e[32m"
 yellow="\e[33m"
+
+bold="\e[1m"
 underline="\e[4m"
+
+reset="\e[0m"
 
 echo -e ${bold}${blue}"
            _         _                       _                 _     
@@ -145,11 +147,25 @@ echo -e "\n[+] dnsgen\n"
 
 pip3 install dnsgen
 
-# dnsx
+# massdns
 
-echo -e "\n[+] dnsx\n"
+echo -e "\n[+] massdns\n"
 
-go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest
+if [ ! -x "$(command -v massdns)" ]
+then
+	git clone https://github.com/blechschmidt/massdns.git 
+	/tmp/massdns
+	cd /tmp/massdns
+	make
+	mv bin/massdns /usr/bin/
+	cd -
+fi
+
+# puredns
+
+echo -e "\n[+] puredns\n"
+
+go install github.com/d3mondev/puredns/v2@latest
 
 # hakrevdns
 

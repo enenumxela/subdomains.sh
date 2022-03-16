@@ -60,10 +60,11 @@ Credit goes to the authors of the various tools used in this script:
 
 * [@OWASP](https://github.com/OWASP) for [amass](https://github.com/OWASP/Amass)
 * [@hakluke](https://github.com/hakluke) for [hakrevdns](https://github.com/hakluke/hakrevdns)
+* [@d3mondev](https://github.com/d3mondev) for [puredns](https://github.com/d3mondev/puredns)
 * [@tomnonom](https://github.com/tomnomnom) for [anew](https://github.com/tomnomnom/anew)
 * [@Edu4rdSHL](https://github.com/Edu4rdSHL) for [findomain](https://github.com/Edu4rdSHL/findomain)
 * [@signedsecurity](http://github.com/signedsecurity) for [sigsubfind3r](http://github.com/signedsecurity/sigsubfind3r)
-* [@projectdiscovery](https://github.com/projectdiscovery) for [subfinder](https://github.com/projectdiscovery/subfinder) & [dnsx](https://github.com/projectdiscovery/dnsx)
+* [@projectdiscovery](https://github.com/projectdiscovery) for [subfinder](https://github.com/projectdiscovery/subfinder)
 
 ## Contribution
 

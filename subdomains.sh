@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
 
-bold="\e[1m"
 red="\e[31m"
 cyan="\e[36m"
 blue="\e[34m"
-reset="\e[0m"
 green="\e[32m"
 yellow="\e[33m"
+
+bold="\e[1m"
 underline="\e[4m"
-script_filename=${0##*/}
+
+reset="\e[0m"
 
 domain=False
 
+resolvers=False
 dictionary_wordlist=False
 permutation_wordlist=False
 
@@ -30,8 +32,8 @@ run_dictionary=True
 run_permutation=True
 run_reverseDNS=True
 
-_output="./.subdomains.txt"
 output="./subdomains.txt"
+_output=".${output##*/}"
 
 display_banner() {
 echo -e ${bold}${blue}"
@@ -51,17 +53,18 @@ display_usage() {
 		printf "%b\n" "${line}"
 	done <<-EOF
 	\rUSAGE:
-	\r  ${script_filename} [OPTIONS]
+	\r  ${0##*/} [OPTIONS]
 
 	\rOPTIONS:
-	\r   -d, --domain \t\t\t domain to gather subdomains for
-	\r  -dW, --dictionary-wordlist \t\t wordlist for dictionary brute forcing
-	\r  -pW, --permutation-wordlist \t\t wordlist for permutation brute forcing
+	\r   -d, --domain \t\t\t domain to gather subdomains for (required)
 	\r       --use-passive-source\t\t comma(,) separated tools to use
 	\r       --exclude-passive-source \t comma(,) separated tools to exclude
 	\r       --skip-semi-active \t\t skip semi active techniques
+	\r   -r, --resolvers \t\t\t list of DNS resolvers (required)
 	\r       --skip-dictionary \t\t skip dictionary brute forcing
+	\r  -dW, --dictionary-wordlist \t\t wordlist for dictionary brute forcing
 	\r       --skip-permutation \t\t skip permutation brute forcing
+	\r  -pW, --permutation-wordlist \t\t wordlist for permutation brute forcing
 	\r   -o, --output \t\t\t output text file
 	\r       --setup\t\t\t\t install/update this script & dependencies
 	\r   -h, --help \t\t\t\t display this help message and exit
@@ -91,14 +94,6 @@ do
 			domain=${2}
 			shift
 		;;
-		-dW | --dictionary-wordlist)
-			dictionary_wordlist=${2}
-			shift
-		;;
-		-pW | --permutation-wordlist)
-			permutation_wordlist=${2}
-			shift
-		;;
 		--use-passive-source)
 			passive_sources_to_use=${2}
 			passive_sources_to_use_dictionary=${passive_sources_to_use//,/ }
@@ -107,7 +102,7 @@ do
 			do
 				if [[ ! " ${passive_sources[@]} " =~ " ${i} " ]]
 				then
-					echo -e "${b"echo 'export PATH=${HOME}/.local/bin' >> /home/{{user `username`}}/.profile",lue}[${red}-${blue}]${reset} Unknown Task: ${i}"
+					echo -e "${blue}[${red}-${blue}]${reset} Unknown Task: ${i}"
 					exit 1
 				fi
 			done
@@ -132,15 +127,27 @@ do
 		--skip-semi-active)
 			run_semi_active=False
 		;;
+		-r | --resolvers)
+			resolvers=${2}
+			shift
+		;;
 		--skip-dictionary)
 			run_dictionary=False
+		;;
+		-dW | --dictionary-wordlist)
+			dictionary_wordlist=${2}
+			shift
 		;;
 		--skip-permutation)
 			run_permutation=False
 		;;
+		-pW | --permutation-wordlist)
+			permutation_wordlist=${2}
+			shift
+		;;
 		-o | --output)
-			_output="$(dirname ${2})/.${2##*/}"
 			output="${2}"
+			_output="$(dirname ${output})/.${output##*/}"
 			shift
 		;;
 		--setup)
@@ -160,8 +167,6 @@ do
 	shift
 done
 
-display_banner
-
 if [ "${SUDO_USER:-$USER}" != "${USER}" ]
 then
 	echo -e "\n${blue}[${red}-${blue}]${reset} failed!...subdomains.sh called with sudo!\n"
@@ -174,12 +179,18 @@ then
 	exit 1
 fi
 
-directory="$(dirname ${output})"
-
-if [ ! -d ${directory} ]
+if [[ ${resolvers} == False ]] || [[ ${resolvers} == "" ]]
 then
-	mkdir -p ${directory}
+	echo -e "\n${blue}[${red}-${blue}]${reset} failed!...Missing -r/--resolvers argument!\n"
+	exit 1
 fi
+
+if [ ! -d $(dirname ${output}) ]
+then
+	mkdir -p $(dirname ${output})
+fi
+
+display_banner
 
 # Run passive discovery
 _amass() {
@@ -230,34 +241,33 @@ then
 	fi
 fi
 
-# Run semi active discovery
-if [ ${run_semi_active} == True ]
+# Run semi active discovery: dictionary
+if [ ${run_semi_active} == True ] && [ ${run_dictionary} == True ] && [ ${dictionary_wordlist} != False ]
 then
-	if [ ${run_dictionary} == True ] && [ ${dictionary_wordlist} != False ]
-	then
-		dnsx -d ${domain} -w ${dictionary_wordlist} -silent | tee -a ${_output}
-	fi
+	puredns bruteforce ${dictionary_wordlist} ${domain} --resolvers ${resolvers} --quiet | tee -a ${_output}
+fi
 
-	if [ ${run_permutation} == True ]
+# Run semi active discovery: permutations
+if [ ${run_semi_active} == True ] && [ ${run_permutation} == True ]
+then
+	if [ ${permutation_wordlist} != False ]
 	then
-		if [ ${permutation_wordlist} != False ]
-		then
-			cat ${_output} | sort -u | dnsgen -w ${permutation_wordlist} - | dnsx -silent | tee -a ${_output}
-		else
-			cat ${_output} | sort -u | dnsgen - | dnsx -silent | tee -a ${_output}
-		fi
-	fi
-
-	if [ ${run_reverseDNS} == True ]
-	then
-		cat ${_output} | sort -u | dnsx -a -resp-only -silent | hakrevdns --domain --threads=10 | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${_output}
+		cat ${_output} | sort -u | dnsgen -w ${permutation_wordlist} - | puredns resolve --resolvers ${resolvers} --quiet | tee -a ${_output}
+	else
+		cat ${_output} | sort -u | dnsgen - | puredns resolve --resolvers ${resolvers} --quiet | tee -a ${_output}
 	fi
 fi
 
 # Filter out live subdomains from temporary output into output
-cat ${_output} | dnsx -silent | anew -q ${output}
+cat ${_output} | puredns resolve --resolvers ${resolvers} --write-massdns /tmp/.massdns --quiet | anew -q ${output}
+
+# Run semi active discovery: reverse DNS
+if [ ${run_semi_active} == True ] && [ ${run_reverseDNS} == True ] && [ -f /tmp/.massdns ]
+then
+	cat /tmp/.massdns | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sort -u | hakrevdns --domain --threads=10 | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${output}
+fi
 
 # Remove temporary output
-rm -rf ${_output}
+rm -rf ${_output} /tmp/.massdns
 
 exit 0
