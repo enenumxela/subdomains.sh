@@ -30,6 +30,7 @@ passive_sources_to_exclude=False
 run_semi_active=True
 run_dictionary=True
 run_permutation=True
+run_DNSrecords=True
 run_reverseDNS=True
 
 output="./subdomains.txt"
@@ -56,20 +57,24 @@ display_usage() {
 	\r  ${0##*/} [OPTIONS]
 
 	\rOPTIONS:
-	\r   -d, --domain \t\t\t domain to gather subdomains for (required)
+	\r   -d, --domain \t\t\t domain to gather subdomains for ${underline}${cyan}*${reset}
 	\r       --use-passive-source\t\t comma(,) separated tools to use
 	\r       --exclude-passive-source \t comma(,) separated tools to exclude
 	\r       --skip-semi-active \t\t skip semi active techniques
-	\r   -r, --resolvers \t\t\t list of DNS resolvers (required)
+	\r   -r, --resolvers \t\t\t list of DNS resolvers ${underline}${cyan}*${reset}
 	\r       --skip-dictionary \t\t skip dictionary brute forcing
 	\r  -dW, --dictionary-wordlist \t\t wordlist for dictionary brute forcing
 	\r       --skip-permutation \t\t skip permutation brute forcing
 	\r  -pW, --permutation-wordlist \t\t wordlist for permutation brute forcing
+	\r       --skip-dns-records \t\t skip discovery from DNS records
+	\r       --skip-reverse-dns \t\t skip discovery from reverse DNS lookup
 	\r   -o, --output \t\t\t output text file
 	\r       --setup\t\t\t\t install/update this script & dependencies
 	\r   -h, --help \t\t\t\t display this help message and exit
 
-	\r ${red}${bold}HAPPY HACKING ${yellow}:)${reset}
+	\rNOTE: options marked with asterik(${underline}${cyan}*${reset}) are required.
+
+	\r${red}${bold}HAPPY HACKING ${yellow}:)${reset}
 
 EOF
 }
@@ -145,6 +150,12 @@ do
 			permutation_wordlist=${2}
 			shift
 		;;
+		--skip-dns-records)
+			run_DNSrecords=False
+		;;
+		--skip-reverse-dns)
+			run_reverseDNS=False
+		;;
 		-o | --output)
 			output="${2}"
 			_output="$(dirname ${output})/.${output##*/}"
@@ -192,7 +203,7 @@ fi
 
 display_banner
 
-# Run passive discovery
+# passive discovery
 _amass() {
 	amass enum -passive -d ${domain} | tee -a ${_output}
 }
@@ -241,13 +252,13 @@ then
 	fi
 fi
 
-# Run semi active discovery: dictionary
+# semi active discovery: dictionary bruteforcing
 if [ ${run_semi_active} == True ] && [ ${run_dictionary} == True ] && [ ${dictionary_wordlist} != False ]
 then
 	puredns bruteforce ${dictionary_wordlist} ${domain} --resolvers ${resolvers} --quiet | tee -a ${_output}
 fi
 
-# Run semi active discovery: permutations
+# semi active discovery: permutations bruteforcing
 if [ ${run_semi_active} == True ] && [ ${run_permutation} == True ]
 then
 	if [ ${permutation_wordlist} != False ]
@@ -261,7 +272,13 @@ fi
 # Filter out live subdomains from temporary output into output
 cat ${_output} | puredns resolve --resolvers ${resolvers} --write-massdns /tmp/.massdns --quiet | anew -q ${output}
 
-# Run semi active discovery: reverse DNS
+# semi active discovery: reverse DNS lookup
+if [ ${run_semi_active} == True ] && [ ${run_DNSrecords} == True ] && [ -f /tmp/.massdns ]
+then
+	cat /tmp/.massdns | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${output}
+fi
+
+# semi active discovery: reverse DNS lookup
 if [ ${run_semi_active} == True ] && [ ${run_reverseDNS} == True ] && [ -f /tmp/.massdns ]
 then
 	cat /tmp/.massdns | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sort -u | hakrevdns --domain --threads=10 | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${output}

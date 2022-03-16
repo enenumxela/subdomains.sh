@@ -2,7 +2,7 @@
 
 ![Made with Bash](https://img.shields.io/badge/made%20with-Bash-0040ff.svg) ![Maintenance](https://img.shields.io/badge/maintained%3F-yes-0040ff.svg) [![open issues](https://img.shields.io/github/issues-raw/enenumxela/subdomains.sh.svg?style=flat&color=0040ff)](https://github.com/enenumxela/subdomains.sh/issues?q=is:issue+is:open) [![closed issues](https://img.shields.io/github/issues-closed-raw/enenumxela/subdomains.sh.svg?style=flat&color=0040ff)](https://github.com/enenumxela/subdomains.sh/issues?q=is:issue+is:closed) [![license](https://img.shields.io/badge/license-MIT-gray.svg?colorB=0040FF)](https://github.com/enenumxela/subdomains.sh/blob/master/LICENSE) [![author](https://img.shields.io/badge/twitter-@enenumxela-0040ff.svg)](https://twitter.com/enenumxela)
 
-`subdomains.sh` wrapper around tools I use for subdomain enumeration on a given domain. This script is written with the aim to automate the workflow.
+`subdomains.sh` wrapper around tools I use for subdomain enumeration, to automate the workflow, on a given domain.
 
 ## Resources
 
@@ -30,20 +30,24 @@ USAGE:
   subdomains.sh [OPTIONS]
 
 OPTIONS:
-  -d,  --domain 			 domain to gather subdomains for
-  -dW,  --dictionary-wordlist 		 wordlist for dictionary brute forcing
-  -pW,  --permutation-wordlist 		 wordlist for permutation brute forcing
+   -d, --domain 			 domain to gather subdomains for *
        --use-passive-source		 comma(,) separated tools to use
        --exclude-passive-source 	 comma(,) separated tools to exclude
        --skip-semi-active 		 skip semi active techniques
+   -r, --resolvers 			 list of DNS resolvers *
        --skip-dictionary 		 skip dictionary brute forcing
+  -dW, --dictionary-wordlist 		 wordlist for dictionary brute forcing
        --skip-permutation 		 skip permutation brute forcing
-  -o,  --output 			 output text file
+  -pW, --permutation-wordlist 		 wordlist for permutation brute forcing
+       --skip-dns-records 		 skip discovery from DNS records
+       --skip-reverse-dns 		 skip discovery from reverse DNS lookup
+   -o, --output 			 output text file
        --setup				 install/update this script & dependencies
-  -h,  --help 				 display this help message and exit
+   -h, --help 				 display this help message and exit
 
- HAPPY HACKING :)
+NOTE: options marked with asterik(*) are required.
 
+HAPPY HACKING :)
 ```
 
 ## Installation
@@ -56,7 +60,7 @@ curl -s https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/install.
 
 ## Credits
 
-Credit goes to the authors of the various tools used in this script:
+Credit goes to the authors of the various tools I used in this script:
 
 * [@OWASP](https://github.com/OWASP) for [amass](https://github.com/OWASP/Amass)
 * [@hakluke](https://github.com/hakluke) for [hakrevdns](https://github.com/hakluke/hakrevdns)
