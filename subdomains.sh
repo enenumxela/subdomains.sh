@@ -272,7 +272,7 @@ fi
 # Filter out live subdomains from temporary output into output
 cat ${_output} | puredns resolve --resolvers ${resolvers} --write-massdns /tmp/.massdns --quiet | anew -q ${output}
 
-# semi active discovery: reverse DNS lookup
+# semi active discovery: DNS records
 if [ ${run_semi_active} == True ] && [ ${run_DNSrecords} == True ] && [ -f /tmp/.massdns ]
 then
 	cat /tmp/.massdns | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${output}
@@ -281,7 +281,7 @@ fi
 # semi active discovery: reverse DNS lookup
 if [ ${run_semi_active} == True ] && [ ${run_reverseDNS} == True ] && [ -f /tmp/.massdns ]
 then
-	cat /tmp/.massdns | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sort -u | hakrevdns --domain --threads=10 | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${output}
+	cat /tmp/.massdns | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sort -u | hakrevdns --domain --threads=100 | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${output}
 fi
 
 # Remove temporary output
