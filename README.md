@@ -30,20 +30,21 @@ USAGE:
   subdomains.sh [OPTIONS]
 
 OPTIONS:
-   -d, --domain 			 domain to gather subdomains for *
-       --use-passive-source		 comma(,) separated tools to use
-       --exclude-passive-source 	 comma(,) separated tools to exclude
-       --skip-semi-active 		 skip semi active techniques
-   -r, --resolvers 			 list of DNS resolvers *
-       --skip-dictionary 		 skip dictionary brute forcing
-  -dW, --dictionary-wordlist 		 wordlist for dictionary brute forcing
-       --skip-permutation 		 skip permutation brute forcing
-  -pW, --permutation-wordlist 		 wordlist for permutation brute forcing
-       --skip-dns-records 		 skip discovery from DNS records
-       --skip-reverse-dns 		 skip discovery from reverse DNS lookup
-   -o, --output 			 output text file
-       --setup				 install/update this script & dependencies
-   -h, --help 				 display this help message and exit
+   -d, --domain                          domain to gather subdomains for *
+       --use-passive-source              comma(,) separated tools to use
+       --exclude-passive-source          comma(,) separated tools to exclude
+       --skip-semi-active                skip semi active techniques
+   -r, --resolvers                       list of DNS resolvers *
+       --skip-dictionary                 skip dictionary brute forcing
+  -dW, --dictionary-wordlist             wordlist for dictionary brute forcing
+       --skip-permutation                skip permutation brute forcing
+  -pW, --permutation-wordlist            wordlist for permutation brute forcing
+       --skip-dns-records                skip discovery from DNS records
+       --skip-reverse-dns                skip discovery from reverse DNS lookup
+       --skip-active                     skip active techniques
+   -o, --output                          output text file
+       --setup                           install/update this script & dependencies
+   -h, --help                            display this help message and exit
 
 NOTE: options marked with asterik(*) are required.
 
@@ -68,7 +69,7 @@ Credit goes to the authors of the various tools I used in this script:
 * [@tomnonom](https://github.com/tomnomnom) for [anew](https://github.com/tomnomnom/anew)
 * [@Edu4rdSHL](https://github.com/Edu4rdSHL) for [findomain](https://github.com/Edu4rdSHL/findomain)
 * [@signedsecurity](http://github.com/signedsecurity) for [sigsubfind3r](http://github.com/signedsecurity/sigsubfind3r)
-* [@projectdiscovery](https://github.com/projectdiscovery) for [subfinder](https://github.com/projectdiscovery/subfinder)
+* [@projectdiscovery](https://github.com/projectdiscovery) for [subfinder](https://github.com/projectdiscovery/subfinder) & [httpx](ttps://github.com/projectdiscovery/subfinder)
 
 ## Contribution
 

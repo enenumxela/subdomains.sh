@@ -179,6 +179,10 @@ echo -e "\n[+] anew\n"
 
 go install github.com/tomnomnom/anew@latest
 
+echo -e "\n[+] httpx\n"
+
+go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
+
 # subdomains.sh
 
 echo -e "\n[+] subdomains.sh\n"

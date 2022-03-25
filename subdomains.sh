@@ -33,6 +33,8 @@ run_permutation=True
 run_DNSrecords=True
 run_reverseDNS=True
 
+run_active=True
+
 output="./subdomains.txt"
 _output=".${output##*/}"
 
@@ -68,6 +70,7 @@ display_usage() {
 	\r  -pW, --permutation-wordlist \t\t wordlist for permutation brute forcing
 	\r       --skip-dns-records \t\t skip discovery from DNS records
 	\r       --skip-reverse-dns \t\t skip discovery from reverse DNS lookup
+	\r       --skip-active \t\t\t skip active techniques
 	\r   -o, --output \t\t\t output text file
 	\r       --setup\t\t\t\t install/update this script & dependencies
 	\r   -h, --help \t\t\t\t display this help message and exit
@@ -155,6 +158,9 @@ do
 		;;
 		--skip-reverse-dns)
 			run_reverseDNS=False
+		;;
+		--skip-active)
+			run_active=False
 		;;
 		-o | --output)
 			output="${2}"
@@ -267,6 +273,12 @@ then
 	else
 		cat ${_output} | sort -u | dnsgen - | puredns resolve --resolvers ${resolvers} --quiet | tee -a ${_output}
 	fi
+fi
+
+# active discovery
+if [ ${run_active} == True ]
+then
+	cat ${_output} | sort -u | httpx -csp-probe -tls-probe -silent | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${_output}
 fi
 
 # Filter out live subdomains from temporary output into output
