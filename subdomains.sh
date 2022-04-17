@@ -20,6 +20,7 @@ permutation_wordlist=False
 run_persive=True
 passive_sources=(
 	amass
+	crobat
 	findomain
 	subfinder
 	sigsubfind3r
@@ -209,9 +210,13 @@ fi
 
 display_banner
 
-# passive discovery
+# 1. passive discovery
 _amass() {
 	amass enum -passive -d ${domain} | tee -a ${_output}
+}
+
+_crobat() {
+	crobat -s ${domain} | tee -a ${_output}
 }
 
 _subfinder() {
@@ -278,7 +283,7 @@ fi
 # active discovery
 if [ ${run_active} == True ]
 then
-	cat ${_output} | sort -u | httpx -csp-probe -tls-probe -silent | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${_output}
+	cat ${_output} | sort -u | httpx -csp-probe -tls-probe -cname -silent | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${_output}
 fi
 
 # Filter out live subdomains from temporary output into output

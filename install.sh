@@ -118,17 +118,23 @@ echo -e "\n[+] amass\n"
 
 go install github.com/OWASP/Amass/v3/...@latest
 
-# subfinder
+# anew
 
-echo -e "\n[+] subfinder\n"
+echo -e "\n[+] anew\n"
 
-go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+go install github.com/tomnomnom/anew@latest
 
-# sigsubfind3r
+# crobat
 
-echo -e "\n[+] sigsubfind3r\n"
+echo -e "\n[+] crobat\n"
 
-go install github.com/signedsecurity/sigsubfind3r/cmd/sigsubfind3r@latest
+go install github.com/cgboal/sonarsearch/cmd/crobat@latest
+
+# dnsgen
+
+echo -e "\n[+] dnsgen\n"
+
+pip3 install dnsgen
 
 # findomain
 
@@ -141,11 +147,15 @@ eval ${DOWNLOAD_CMD} https://github.com/Edu4rdSHL/findomain/releases/latest/down
 chmod a+x ${binary_path}
 EOF
 
-# dnsgen
+# hakrevdns
 
-echo -e "\n[+] dnsgen\n"
+echo -e "\n[+] hakrevdns\n"
 
-pip3 install dnsgen
+go install github.com/hakluke/hakrevdns@latest
+
+echo -e "\n[+] httpx\n"
+
+go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
 
 # massdns
 
@@ -167,21 +177,18 @@ echo -e "\n[+] puredns\n"
 
 go install github.com/d3mondev/puredns/v2@latest
 
-# hakrevdns
 
-echo -e "\n[+] hakrevdns\n"
+# sigsubfind3r
 
-go install github.com/hakluke/hakrevdns@latest
+echo -e "\n[+] sigsubfind3r\n"
 
-# anew
+go install github.com/signedsecurity/sigsubfind3r/cmd/sigsubfind3r@latest
 
-echo -e "\n[+] anew\n"
+# subfinder
 
-go install github.com/tomnomnom/anew@latest
+echo -e "\n[+] subfinder\n"
 
-echo -e "\n[+] httpx\n"
-
-go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
+go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 
 # subdomains.sh
 
