@@ -150,12 +150,12 @@ echo -e "\n[+] massdns\n"
 
 if [ ! -x "$(command -v massdns)" ]
 then
-	git clone https://github.com/blechschmidt/massdns.git /var/tmp/massdns
-	cd /var/tmp/massdns
+	git clone https://github.com/blechschmidt/massdns.git /tmp/massdns
+	cd /tmp/massdns
 	make
-	sudo mv bin/massdns /usr/bin/
+	eval ${DOWNLOAD_CMD} mv bin/massdns /usr/bin/
 	cd -
-	rm -rf /var/tmp/massdns
+	rm -rf /tmp/massdns
 fi
 
 # puredns
