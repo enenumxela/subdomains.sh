@@ -58,6 +58,23 @@ Run the installation script:
 ```bash
 curl -s https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/install.sh | bash -
 ```
+Or run in an ephemeral Docker container:
+
+Clone the repository and run
+
+```bash
+cd subdomains.sh
+# Build the container image
+./docker-subdomains.sh build
+
+# After build, you can run the script with the same options listed above.
+# Each run will run in a new container, and the container is destroyed after run
+./docker-sudomains.sh -d example.com -r 1.1.1.1
+
+# To destroy the container image if desired
+./docker-subdomains.sh destroy
+
+```
 
 ## Credits
 

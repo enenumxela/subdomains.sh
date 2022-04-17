@@ -85,9 +85,6 @@ then
 
 	echo -e "\n[+] go${version}\n"
 
-	https://golang.org/dl/go1.17.6.linux-amd64.tar.gz -o /tmp/go1.17.6.linux-amd64.tar.gz
-	tar -xzf /tmp/go1.17.6.linux-amd64.tar.gz -C /usr/local
-
 	eval ${DOWNLOAD_CMD} https://golang.org/dl/go${version}.linux-amd64.tar.gz -o /tmp/go${version}.linux-amd64.tar.gz
 
 	eval ${CMD_PREFIX} tar -xzf /tmp/go${version}.linux-amd64.tar.gz -C /usr/local
@@ -163,12 +160,12 @@ echo -e "\n[+] massdns\n"
 
 if [ ! -x "$(command -v massdns)" ]
 then
-	git clone https://github.com/blechschmidt/massdns.git 
-	/tmp/massdns
+	git clone https://github.com/blechschmidt/massdns.git /tmp/massdns
 	cd /tmp/massdns
 	make
-	mv bin/massdns /usr/bin/
+	eval ${CMD_PREFIX} mv bin/massdns /usr/bin/
 	cd -
+	rm -rf /tmp/massdns
 fi
 
 # puredns
