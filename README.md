@@ -86,7 +86,7 @@ Credit goes to the authors of the various tools I used in this script:
 * [@tomnonom](https://github.com/tomnomnom) for [anew](https://github.com/tomnomnom/anew)
 * [@Edu4rdSHL](https://github.com/Edu4rdSHL) for [findomain](https://github.com/Edu4rdSHL/findomain)
 * [@signedsecurity](http://github.com/signedsecurity) for [sigsubfind3r](http://github.com/signedsecurity/sigsubfind3r)
-* [@projectdiscovery](https://github.com/projectdiscovery) for [subfinder](https://github.com/projectdiscovery/subfinder) \& [httpx](ttps://github.com/projectdiscovery/subfinder)
+* [@projectdiscovery](https://github.com/projectdiscovery) for [subfinder](https://github.com/projectdiscovery/subfinder) and [httpx](ttps://github.com/projectdiscovery/subfinder)
 
 ## Contribution
 
