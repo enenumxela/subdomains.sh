@@ -153,7 +153,7 @@ then
 	git clone https://github.com/blechschmidt/massdns.git /tmp/massdns
 	cd /tmp/massdns
 	make
-	eval ${DOWNLOAD_CMD} mv bin/massdns /usr/bin/
+	eval ${CMD_PREFIX} mv bin/massdns /usr/bin/
 	cd -
 	rm -rf /tmp/massdns
 fi
