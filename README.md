@@ -2,7 +2,9 @@
 
 ![Made with Bash](https://img.shields.io/badge/made%20with-Bash-0040ff.svg) ![Maintenance](https://img.shields.io/badge/maintained%3F-yes-0040ff.svg) [![open issues](https://img.shields.io/github/issues-raw/enenumxela/subdomains.sh.svg?style=flat&color=0040ff)](https://github.com/enenumxela/subdomains.sh/issues?q=is:issue+is:open) [![closed issues](https://img.shields.io/github/issues-closed-raw/enenumxela/subdomains.sh.svg?style=flat&color=0040ff)](https://github.com/enenumxela/subdomains.sh/issues?q=is:issue+is:closed) [![license](https://img.shields.io/badge/license-MIT-gray.svg?colorB=0040FF)](https://github.com/enenumxela/subdomains.sh/blob/master/LICENSE) [![author](https://img.shields.io/badge/twitter-@enenumxela-0040ff.svg)](https://twitter.com/enenumxela)
 
-A wrapper around tools used for subdomain enumeration, to automate the workflow, on a given domain, written in bash.
+A wrapper around tools used for subdomain enumeration, to automate the workflow, on a given domain, written in bash. The workflow:-
+
+![](./static/subdomains.sh-flowchart.jpg)
 
 ## Resources
 
@@ -30,21 +32,21 @@ USAGE:
   subdomains.sh [OPTIONS]
 
 OPTIONS:
-   -d, --domain                          domain to gather subdomains for *
-       --use-passive-source              comma(,) separated tools to use
-       --exclude-passive-source          comma(,) separated tools to exclude
-       --skip-semi-active                skip semi active techniques
-   -r, --resolvers                       list of DNS resolvers *
-       --skip-dictionary                 skip dictionary brute forcing
-  -dW, --dictionary-wordlist             wordlist for dictionary brute forcing
-       --skip-permutation                skip permutation brute forcing
-  -pW, --permutation-wordlist            wordlist for permutation brute forcing
-       --skip-dns-records                skip discovery from DNS records
-       --skip-reverse-dns                skip discovery from reverse DNS lookup
-       --skip-active                     skip active techniques
-   -o, --output                          output text file
-       --setup                           install/update this script & dependencies
-   -h, --help                            display this help message and exit
+   -d, --domain 			 domain to discover subdomains for *
+   -r, --resolvers 			 list of DNS resolvers containing file *
+       --use-passive-source		 comma(,) separated passive tools to use
+       --exclude-passive-source 	 comma(,) separated passive tools to exclude
+       --skip-semi-active 		 skip discovery from semi active techniques
+       --skip-dictionary 		 skip discovery from dictionary DNS brute forcing
+  -dW, --dictionary-wordlist 		 wordlist for dictionary DNS  brute forcing
+       --skip-permutation 		 skip discovery from permutation DNS brute forcing
+  -pW, --permutation-wordlist 		 wordlist for permutation DNS brute forcing
+       --skip-dns-records 		 skip discovery from DNS records
+       --skip-reverse-dns 		 skip discovery from reverse DNS lookup
+       --skip-active 			 skip discovery from active techniques
+   -o, --output 			 output text file
+       --setup				 install/update this script & dependencies
+   -h, --help 				 display this help message and exit
 
 NOTE: options marked with asterik(*) are required.
 

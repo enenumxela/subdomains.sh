@@ -60,18 +60,18 @@ display_usage() {
 	\r  ${0##*/} [OPTIONS]
 
 	\rOPTIONS:
-	\r   -d, --domain \t\t\t domain to gather subdomains for ${underline}${cyan}*${reset}
-	\r       --use-passive-source\t\t comma(,) separated tools to use
-	\r       --exclude-passive-source \t comma(,) separated tools to exclude
-	\r       --skip-semi-active \t\t skip semi active techniques
-	\r   -r, --resolvers \t\t\t list of DNS resolvers ${underline}${cyan}*${reset}
-	\r       --skip-dictionary \t\t skip dictionary brute forcing
-	\r  -dW, --dictionary-wordlist \t\t wordlist for dictionary brute forcing
-	\r       --skip-permutation \t\t skip permutation brute forcing
-	\r  -pW, --permutation-wordlist \t\t wordlist for permutation brute forcing
+	\r   -d, --domain \t\t\t domain to discover subdomains for ${underline}${cyan}*${reset}
+	\r   -r, --resolvers \t\t\t list of DNS resolvers containing file ${underline}${cyan}*${reset}
+	\r       --use-passive-source\t\t comma(,) separated passive tools to use
+	\r       --exclude-passive-source \t comma(,) separated passive tools to exclude
+	\r       --skip-semi-active \t\t skip discovery from semi active techniques
+	\r       --skip-dictionary \t\t skip discovery from dictionary DNS brute forcing
+	\r  -dW, --dictionary-wordlist \t\t wordlist for dictionary DNS  brute forcing
+	\r       --skip-permutation \t\t skip discovery from permutation DNS brute forcing
+	\r  -pW, --permutation-wordlist \t\t wordlist for permutation DNS brute forcing
 	\r       --skip-dns-records \t\t skip discovery from DNS records
 	\r       --skip-reverse-dns \t\t skip discovery from reverse DNS lookup
-	\r       --skip-active \t\t\t skip active techniques
+	\r       --skip-active \t\t\t skip discovery from active techniques
 	\r   -o, --output \t\t\t output text file
 	\r       --setup\t\t\t\t install/update this script & dependencies
 	\r   -h, --help \t\t\t\t display this help message and exit
@@ -92,7 +92,7 @@ elif command -v >&- wget
 then
 	DOWNLOAD_CMD="wget --quiet --show-progres --continue --output-document=-"
 else
-	echo "${blue}[${red}-${blue}]${reset} Could not find wget/cURL" >&2
+	echo "${bold}${blue}[${red}-${blue}]${reset} Could not find wget/cURL" >&2
 	exit 1
 fi
 
@@ -103,6 +103,10 @@ do
 			domain=${2}
 			shift
 		;;
+		-r | --resolvers)
+			resolvers=${2}
+			shift
+		;;
 		--use-passive-source)
 			passive_sources_to_use=${2}
 			passive_sources_to_use_dictionary=${passive_sources_to_use//,/ }
@@ -111,7 +115,7 @@ do
 			do
 				if [[ ! " ${passive_sources[@]} " =~ " ${i} " ]]
 				then
-					echo -e "${blue}[${red}-${blue}]${reset} Unknown Task: ${i}"
+					echo -e "${bold}${blue}[${red}-${blue}]${reset} Unknown Task: ${i}"
 					exit 1
 				fi
 			done
@@ -126,7 +130,7 @@ do
 			do
 				if [[ ! " ${passive_sources[@]} " =~ " ${i} " ]]
 				then
-					echo -e "${blue}[${red}-${blue}]${reset} Unknown Task: ${i}"
+					echo -e "${bold}${blue}[${red}-${blue}]${reset} Unknown Task: ${i}"
 					exit 1
 				fi
 			done
@@ -135,10 +139,6 @@ do
 		;;
 		--skip-semi-active)
 			run_semi_active=False
-		;;
-		-r | --resolvers)
-			resolvers=${2}
-			shift
 		;;
 		--skip-dictionary)
 			run_dictionary=False
@@ -187,19 +187,30 @@ done
 
 if [ "${SUDO_USER:-$USER}" != "${USER}" ]
 then
-	echo -e "\n${blue}[${red}-${blue}]${reset} failed!...subdomains.sh called with sudo!\n"
+	echo -e "\n${bold}${blue}[${red}-${blue}]${reset} failed!...subdomains.sh called with sudo!\n"
 	exit 1
 fi
 
 if [[ ${domain} == False ]] || [[ ${domain} == "" ]]
 then
-	echo -e "\n${blue}[${red}-${blue}]${reset} failed!...Missing -d/--domain argument!\n"
+	echo -e "\n${bold}${blue}[${red}-${blue}]${reset} failed!...Missing -d/--domain argument!\n"
 	exit 1
 fi
 
 if [[ ${resolvers} == False ]] || [[ ${resolvers} == "" ]]
 then
-	echo -e "\n${blue}[${red}-${blue}]${reset} failed!...Missing -r/--resolvers argument!\n"
+	# resolvers list file not provided
+	echo -e "\n${bold}${blue}[${red}-${blue}]${reset} failed!...Missing -r/--resolvers argument!\n"
+	exit 1
+elif [ ! -f ${resolvers} ]
+then
+	# resolvers list file provided not found
+	echo -e "\n${bold}${blue}[${red}-${blue}]${reset} failed!...Resolvers list file, \`${resolvers}\`, not found!\n"
+	exit 1
+elif [ ! -s ${resolvers} ]
+then
+	# resolvers list file provide found but empty
+	echo -e "\n${bold}${blue}[${red}-${blue}]${reset} failed!...Resolvers list file, \`${resolvers}\`, is empty!\n"
 	exit 1
 fi
 
@@ -210,7 +221,7 @@ fi
 
 display_banner
 
-# 1. passive discovery
+# passive discovery
 _amass() {
 	amass enum -passive -d ${domain} | tee -a ${_output}
 }
@@ -263,13 +274,13 @@ then
 	fi
 fi
 
-# semi active discovery: dictionary bruteforcing
+# semi active discovery: dictionary DNS bruteforcing
 if [ ${run_semi_active} == True ] && [ ${run_dictionary} == True ] && [ ${dictionary_wordlist} != False ]
 then
 	puredns bruteforce ${dictionary_wordlist} ${domain} --resolvers ${resolvers} --quiet | tee -a ${_output}
 fi
 
-# semi active discovery: permutations bruteforcing
+# semi active discovery: permutations DNS bruteforcing
 if [ ${run_semi_active} == True ] && [ ${run_permutation} == True ]
 then
 	if [ ${permutation_wordlist} != False ]
@@ -280,16 +291,16 @@ then
 	fi
 fi
 
-# active discovery
+# active discovery: csp headers & TLS
 if [ ${run_active} == True ]
 then
-	cat ${_output} | sort -u | httpx -csp-probe -tls-probe -cname -silent | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${_output}
+	cat ${_output} | sort -u | httpx -csp-probe -tls-probe -silent | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${_output}
 fi
 
 # Filter out live subdomains from temporary output into output
 cat ${_output} | puredns resolve --resolvers ${resolvers} --write-massdns /tmp/.massdns --quiet | anew -q ${output}
 
-# semi active discovery: DNS records
+# semi active discovery: DNS records - CNAME, e.t.c
 if [ ${run_semi_active} == True ] && [ ${run_DNSrecords} == True ] && [ -f /tmp/.massdns ]
 then
 	cat /tmp/.massdns | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | anew ${output}
