@@ -18,7 +18,7 @@ A wrapper around tools used for subdomain enumeration, to automate the workflow,
 
 ![Flow Chart](https://github.com/enenumxela/subdomains.sh/blob/main/static/flowchart.png)
 
-<div>
+</div>
 
 ## Installation
 
