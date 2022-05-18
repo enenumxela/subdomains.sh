@@ -100,15 +100,6 @@ fi
 
 source ~/.profile
 
-# python3
-
-if [ ! -x "$(command -v python3)" ] || [ ! -x "$(command -v pip3)" ]
-then
-	echo -e "\n[+] python3\n"
-
-	eval ${CMD_PREFIX} apt-get install -qq -y python3 python3-pip
-fi
-
 # amass
 
 echo -e "\n[+] amass\n"
@@ -127,12 +118,6 @@ echo -e "\n[+] crobat\n"
 
 go install github.com/cgboal/sonarsearch/cmd/crobat@latest
 
-# dnsgen
-
-echo -e "\n[+] dnsgen\n"
-
-pip3 install dnsgen
-
 # findomain
 
 echo -e "\n[+] findomain\n"
@@ -143,6 +128,12 @@ eval ${CMD_PREFIX} bash <<EOF
 eval ${DOWNLOAD_CMD} https://github.com/Edu4rdSHL/findomain/releases/latest/download/findomain-linux > ${binary_path}
 chmod a+x ${binary_path}
 EOF
+
+# gotator
+
+echo -e "\n[+] gotator\n"
+
+go install github.com/Josue87/gotator@latest
 
 # hakrevdns
 
@@ -173,7 +164,6 @@ fi
 echo -e "\n[+] puredns\n"
 
 go install github.com/d3mondev/puredns/v2@latest
-
 
 # sigsubfind3r
 

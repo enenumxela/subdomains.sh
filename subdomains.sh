@@ -223,23 +223,23 @@ display_banner
 
 # passive discovery
 _amass() {
-	amass enum -passive -d ${domain} | tee -a ${_output}
+	amass enum -passive -d ${domain} | anew ${_output}
 }
 
 _crobat() {
-	crobat -s ${domain} | tee -a ${_output}
+	crobat -s ${domain} | anew ${_output}
 }
 
 _subfinder() {
-	subfinder -d ${domain} -all -silent | tee -a ${_output}
+	subfinder -d ${domain} -all -silent | anew ${_output}
 }
 
 _findomain() {
-	findomain -t ${domain} --quiet | tee -a ${_output}
+	findomain -t ${domain} --quiet | anew ${_output}
 }
 
 _sigsubfind3r() {
-	sigsubfind3r -d ${domain} --silent | tee -a ${_output}
+	sigsubfind3r -d ${domain} --silent | anew ${_output}
 }
 
 if [ ${run_persive} == True ]
@@ -277,7 +277,19 @@ fi
 # semi active discovery: dictionary DNS bruteforcing
 if [ ${run_semi_active} == True ] && [ ${run_dictionary} == True ] && [ ${dictionary_wordlist} != False ]
 then
-	puredns bruteforce ${dictionary_wordlist} ${domain} --resolvers ${resolvers} --quiet | tee -a ${_output}
+	puredns bruteforce ${dictionary_wordlist} ${domain} --resolvers ${resolvers} --quiet | anew ${_output}
+fi
+
+# active discovery: TLS
+if [ ${run_active} == True ]
+then
+	cat ${_output} | httpx -tls-grab -json -silent | jq -r .'"tls-grab".dns_names[]' | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | anew ${_output}
+fi
+
+# active discovery: Headers: CSP
+if [ ${run_active} == True ]
+then
+	cat ${_output} | httpx -csp-probe -silent | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | anew ${_output}
 fi
 
 # semi active discovery: permutations DNS bruteforcing
@@ -285,16 +297,10 @@ if [ ${run_semi_active} == True ] && [ ${run_permutation} == True ]
 then
 	if [ ${permutation_wordlist} != False ]
 	then
-		cat ${_output} | sort -u | dnsgen -w ${permutation_wordlist} - | puredns resolve --resolvers ${resolvers} --quiet | tee -a ${_output}
+		gotator -sub ${_output} -perm ${permutation_wordlist} -prefixes -depth 3 -numbers 10 -mindup -adv -silent | puredns resolve --resolvers ${resolvers} --quiet | anew ${_output}
 	else
-		cat ${_output} | sort -u | dnsgen - | puredns resolve --resolvers ${resolvers} --quiet | tee -a ${_output}
+		gotator -sub ${_output} -prefixes -depth 3 -numbers 10 -mindup -adv -silent | puredns resolve --resolvers ${resolvers} --quiet | anew ${_output}
 	fi
-fi
-
-# active discovery: csp headers & TLS
-if [ ${run_active} == True ]
-then
-	cat ${_output} | sort -u | httpx -csp-probe -tls-probe -silent | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | tee -a ${_output}
 fi
 
 # Filter out live subdomains from temporary output into output
