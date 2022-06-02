@@ -283,7 +283,7 @@ fi
 # active discovery: TLS
 if [ ${run_active} == True ]
 then
-	cat ${_output} | httpx -tls-grab -json -silent | jq -r .'"tls-grab".dns_names[]' | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | anew ${_output}
+	cat ${_output} | cero -d | grep -Po "^[^-*\"]*?\K[[:alnum:]-]+\.${domain}" | anew ${_output}
 fi
 
 # active discovery: Headers: CSP

@@ -112,6 +112,12 @@ echo -e "\n[+] anew\n"
 
 go install github.com/tomnomnom/anew@latest
 
+# cero
+
+echo -e "\n[+] cero\n"
+
+go install github.com/glebarez/cero@latest
+
 # crobat
 
 echo -e "\n[+] crobat\n"
