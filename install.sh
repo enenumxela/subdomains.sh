@@ -194,5 +194,5 @@ then
 	rm ${script_path}
 fi
 
-eval ${DOWNLOAD_CMD} https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/subdomains.sh > ${script_path}
+eval ${DOWNLOAD_CMD} https://raw.githubusercontent.com/hueristiq/subdomains.sh/main/subdomains.sh > ${script_path}
 chmod u+x ${script_path}

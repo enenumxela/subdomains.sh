@@ -169,7 +169,7 @@ do
 			shift
 		;;
 		--setup)
-			eval ${DOWNLOAD_CMD} https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/install.sh | bash -
+			eval ${DOWNLOAD_CMD} https://raw.githubusercontent.com/hueristiq/subdomains.sh/main/install.sh | bash -
 			exit 0
 		;;
 		-h | --help)
