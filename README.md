@@ -1,6 +1,6 @@
 # subdomains.sh
 
-![Made with Bash](https://img.shields.io/badge/made%20with-Bash-0040ff.svg) ![Maintenance](https://img.shields.io/badge/maintained%3F-yes-0040ff.svg) [![open issues](https://img.shields.io/github/issues-raw/enenumxela/subdomains.sh.svg?style=flat&color=0040ff)](https://github.com/enenumxela/subdomains.sh/issues?q=is:issue+is:open) [![closed issues](https://img.shields.io/github/issues-closed-raw/enenumxela/subdomains.sh.svg?style=flat&color=0040ff)](https://github.com/enenumxela/subdomains.sh/issues?q=is:issue+is:closed) [![license](https://img.shields.io/badge/license-MIT-gray.svg?colorB=0040FF)](https://github.com/enenumxela/subdomains.sh/blob/master/LICENSE) [![author](https://img.shields.io/badge/twitter-@enenumxela-0040ff.svg)](https://twitter.com/enenumxela)
+![Made with Bash](https://img.shields.io/badge/made%20with-Bash-0040ff.svg) ![Maintenance](https://img.shields.io/badge/maintained%3F-yes-0040ff.svg) [![open issues](https://img.shields.io/github/issues-raw/hueristiq/subdomains.sh.svg?style=flat&color=0040ff)](https://github.com/hueristiq/subdomains.sh/issues?q=is:issue+is:open) [![closed issues](https://img.shields.io/github/issues-closed-raw/hueristiq/subdomains.sh.svg?style=flat&color=0040ff)](https://github.com/hueristiq/subdomains.sh/issues?q=is:issue+is:closed) [![license](https://img.shields.io/badge/license-MIT-gray.svg?colorB=0040FF)](https://github.com/hueristiq/subdomains.sh/blob/master/LICENSE) [![author](https://img.shields.io/badge/twitter-@itshueristiq-0040ff.svg)](https://twitter.com/itshueristiq)
 
 A wrapper around tools used for subdomain enumeration, to automate the workflow, on a given domain, written in bash.
 
@@ -16,7 +16,7 @@ A wrapper around tools used for subdomain enumeration, to automate the workflow,
 
 <div align="center">
 
-![Flow Chart](https://github.com/enenumxela/subdomains.sh/blob/main/static/flowchart.png)
+![Flow Chart](https://github.com/hueristiq/subdomains.sh/blob/main/static/flowchart.png)
 
 </div>
 
@@ -25,7 +25,7 @@ A wrapper around tools used for subdomain enumeration, to automate the workflow,
 Run the installation script:
 
 ```bash
-curl -s https://raw.githubusercontent.com/enenumxela/subdomains.sh/main/install.sh | bash -
+curl -s https://raw.githubusercontent.com/hueristiq/subdomains.sh/main/install.sh | bash -
 ```
 Or run in an ephemeral Docker container:
 
@@ -99,4 +99,4 @@ Credit goes to the authors of the various tools I used in this script:
 
 ## Contribution
 
-[Issues](https://github.com/enenumxela/subdomains.sh/issues) and [Pull Requests](https://github.com/enenumxela/subdomains.sh/pulls) are welcome!
+[Issues](https://github.com/hueristiq/subdomains.sh/issues) and [Pull Requests](https://github.com/hueristiq/subdomains.sh/pulls) are welcome!
