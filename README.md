@@ -54,6 +54,7 @@ subdomains.sh -h
 ```
 
 ```text
+
            _         _                       _                 _     
  ___ _   _| |__   __| | ___  _ __ ___   __ _(_)_ __  ___   ___| |__  
 / __| | | | '_ \ / _` |/ _ \| '_ ` _ \ / _` | | '_ \/ __| / __| '_ \ 
@@ -66,16 +67,16 @@ USAGE:
 OPTIONS:
    -d, --domain 			 domain to discover subdomains for *
    -r, --resolvers 			 list of DNS resolvers containing file *
-       --use-passive-source		 comma(,) separated passive tools to use
-       --exclude-passive-source 	 comma(,) separated passive tools to exclude
-       --skip-semi-active 		 skip discovery from semi active techniques
+       --skip-passive 			 skip passive discovery discovery
+       --use-passive-tools 		 comma(,) separated passive tools to use
+       --exclude-passive-tools 		 comma(,) separated passive tools to exclude
+       --skip-active 			 skip active discovery discovery
        --skip-dictionary 		 skip discovery from dictionary DNS brute forcing
   -dW, --dictionary-wordlist 		 wordlist for dictionary DNS  brute forcing
        --skip-permutation 		 skip discovery from permutation DNS brute forcing
   -pW, --permutation-wordlist 		 wordlist for permutation DNS brute forcing
        --skip-dns-records 		 skip discovery from DNS records
        --skip-reverse-dns 		 skip discovery from reverse DNS lookup
-       --skip-active 			 skip discovery from active techniques
    -o, --output 			 output text file
        --setup				 install/update this script & dependencies
    -h, --help 				 display this help message and exit
@@ -83,6 +84,7 @@ OPTIONS:
 NOTE: options marked with asterik(*) are required.
 
 HAPPY HACKING :)
+
 ```
 
 ## Credits
@@ -94,6 +96,7 @@ Credit goes to the authors of the various tools I used in this script:
 * [@d3mondev](https://github.com/d3mondev) for [puredns](https://github.com/d3mondev/puredns)
 * [@tomnonom](https://github.com/tomnomnom) for [anew](https://github.com/tomnomnom/anew)
 * [@Edu4rdSHL](https://github.com/Edu4rdSHL) for [findomain](https://github.com/Edu4rdSHL/findomain)
+* [@shenwei356](https://github.com/shenwei356) for [rush](https://github.com/shenwei356/rush)
 * [@signedsecurity](http://github.com/signedsecurity) for [sigsubfind3r](http://github.com/signedsecurity/sigsubfind3r)
 * [@projectdiscovery](https://github.com/projectdiscovery) for [subfinder](https://github.com/projectdiscovery/subfinder) and [httpx](https://github.com/projectdiscovery/subfinder)
 
