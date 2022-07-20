@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 
-red="\e[31m"
-cyan="\e[36m"
+# Formating
 blue="\e[34m"
-green="\e[32m"
-yellow="\e[33m"
-
 bold="\e[1m"
-underline="\e[4m"
-
+cyan="\e[36m"
+green="\e[32m"
+red="\e[31m"
+yellow="\e[33m"
 reset="\e[0m"
+underline="\e[4m"
 
 echo -e ${bold}${blue}"
            _         _                       _                 _     
