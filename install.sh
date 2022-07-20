@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 
-red="\e[31m"
-cyan="\e[36m"
+# Formating
 blue="\e[34m"
-green="\e[32m"
-yellow="\e[33m"
-
 bold="\e[1m"
-underline="\e[4m"
-
+cyan="\e[36m"
+green="\e[32m"
+red="\e[31m"
+yellow="\e[33m"
 reset="\e[0m"
+underline="\e[4m"
 
 echo -e ${bold}${blue}"
            _         _                       _                 _     
@@ -58,16 +57,16 @@ then
 fi
 
 tools=(
-    curl
+	curl
 )
 missing_tools=()
 
 for tool in "${tools[@]}"
 do
-    if [ ! -x "$(command -v ${tool})" ]
-    then 
-        missing_tools+=(${tool})
-    fi
+	if [ ! -x "$(command -v ${tool})" ]
+	then 
+		missing_tools+=(${tool})
+	fi
 done
 
 if [ ${#missing_tools[@]} -gt 0 ]
@@ -76,8 +75,6 @@ then
 
 	eval ${CMD_PREFIX} apt-get -qq -y install ${missing_tools[@]}
 fi
-
-# golang
 
 if [ ! -x "$(command -v go)" ] && [ ! -x "$(command -v /usr/local/go/bin/go)" ]
 then
@@ -93,38 +90,27 @@ fi
 (grep -q "export PATH=\$PATH:/usr/local/go/bin" ~/.profile) || {
 	echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.profile
 }
-
 (grep -q "export PATH=\$PATH:${HOME}/go/bin" ~/.profile) || {
 	echo "export PATH=\$PATH:${HOME}/go/bin" >> ~/.profile
 }
 
 source ~/.profile
 
-# amass
-
 echo -e "\n[+] amass\n"
 
 go install github.com/OWASP/Amass/v3/...@latest
-
-# anew
 
 echo -e "\n[+] anew\n"
 
 go install github.com/tomnomnom/anew@latest
 
-# cero
-
 echo -e "\n[+] cero\n"
 
 go install github.com/glebarez/cero@latest
 
-# crobat
-
 echo -e "\n[+] crobat\n"
 
 go install github.com/cgboal/sonarsearch/cmd/crobat@latest
-
-# findomain
 
 echo -e "\n[+] findomain\n"
 
@@ -135,13 +121,9 @@ eval ${DOWNLOAD_CMD} https://github.com/Edu4rdSHL/findomain/releases/latest/down
 chmod a+x ${binary_path}
 EOF
 
-# gotator
-
 echo -e "\n[+] gotator\n"
 
 go install github.com/Josue87/gotator@latest
-
-# hakrevdns
 
 echo -e "\n[+] hakrevdns\n"
 
@@ -151,7 +133,16 @@ echo -e "\n[+] httpx\n"
 
 go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
 
-# massdns
+echo -e "\n[+] interlace\n"
+
+if [! -d /tmp/Interlace ]
+then
+	git clone https://github.com/codingo/Interlace.git /tmp/Interlace
+else 
+	git pull -C /tmp/Interlace
+fi
+
+python3 setup.py install
 
 echo -e "\n[+] massdns\n"
 
@@ -165,25 +156,21 @@ then
 	rm -rf /tmp/massdns
 fi
 
-# puredns
-
 echo -e "\n[+] puredns\n"
 
 go install github.com/d3mondev/puredns/v2@latest
 
-# sigsubfind3r
+echo -e "\n[+] rush\n"
+
+go install github.com/shenwei356/rush@latest
 
 echo -e "\n[+] sigsubfind3r\n"
 
 go install github.com/signedsecurity/sigsubfind3r/cmd/sigsubfind3r@latest
 
-# subfinder
-
 echo -e "\n[+] subfinder\n"
 
 go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
-
-# subdomains.sh
 
 echo -e "\n[+] subdomains.sh\n"
 
