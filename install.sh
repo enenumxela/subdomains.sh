@@ -133,17 +133,6 @@ echo -e "\n[+] httpx\n"
 
 go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
 
-echo -e "\n[+] interlace\n"
-
-if [! -d /tmp/Interlace ]
-then
-	git clone https://github.com/codingo/Interlace.git /tmp/Interlace
-else 
-	git pull -C /tmp/Interlace
-fi
-
-python3 setup.py install
-
 echo -e "\n[+] massdns\n"
 
 if [ ! -x "$(command -v massdns)" ]
