@@ -16,7 +16,7 @@ A wrapper around tools used for subdomain enumeration, to automate the workflow,
 
 <div align="center">
 
-![Flow Chart](https://github.com/hueristiq/subdomains.sh/blob/main/static/flowchart.png)
+![Flow Chart](https://github.com/hueristiq/subdomains.sh/raw/main/static/flowchart.png)
 
 </div>
 
@@ -97,7 +97,7 @@ Credit goes to the authors of the various tools I used in this script:
 * [@tomnonom](https://github.com/tomnomnom) for [anew](https://github.com/tomnomnom/anew)
 * [@Edu4rdSHL](https://github.com/Edu4rdSHL) for [findomain](https://github.com/Edu4rdSHL/findomain)
 * [@shenwei356](https://github.com/shenwei356) for [rush](https://github.com/shenwei356/rush)
-* [@signedsecurity](http://github.com/signedsecurity) for [sigsubfind3r](http://github.com/signedsecurity/sigsubfind3r)
+* [@hueristiq](http://github.com/hueristiq) for [subfind3r](http://github.com/hueristiq/subfind3r)
 * [@projectdiscovery](https://github.com/projectdiscovery) for [subfinder](https://github.com/projectdiscovery/subfinder) and [httpx](https://github.com/projectdiscovery/subfinder)
 
 ## Contribution

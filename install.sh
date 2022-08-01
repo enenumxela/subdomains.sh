@@ -153,9 +153,9 @@ echo -e "\n[+] rush\n"
 
 go install github.com/shenwei356/rush@latest
 
-echo -e "\n[+] sigsubfind3r\n"
+echo -e "\n[+] subfind3r\n"
 
-go install github.com/signedsecurity/sigsubfind3r/cmd/sigsubfind3r@latest
+go install github.com/hueristiq/subfind3r/cmd/subfind3r@latest
 
 echo -e "\n[+] subfinder\n"
 

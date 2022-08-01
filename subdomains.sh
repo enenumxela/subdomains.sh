@@ -27,7 +27,7 @@ passive_tools=(
 	crobat
 	findomain
 	subfinder
-	sigsubfind3r
+	subfind3r
 )
 passive_tools_to_use=False
 passive_tools_to_exclude=False
@@ -248,7 +248,7 @@ then
 		["crobat"]="crobat -s ${domain} | anew ${_output}"
 		["subfinder"]="subfinder -d ${domain} -all -silent | anew ${_output}"
 		["findomain"]="findomain -t ${domain} --quiet | anew ${_output}"
-		["sigsubfind3r"]="sigsubfind3r -d ${domain} --silent | anew ${_output}"
+		["subfind3r"]="subfind3r -d ${domain} --silent | anew ${_output}"
 	)
 
 	# determine passive commands to run
